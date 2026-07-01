@@ -46,8 +46,8 @@ Live site: https://www.bisdorf.org
 Clone the repository:
 
 ```bash
-git clone https://github.com/joshuabisdorf/bisdorf-org.git
-cd bisdorf-org
+git clone https://github.com/joshuabisdorf/Bisdorf.org.git
+cd Bisdorf.org
 ```
 
 Install dependencies:
