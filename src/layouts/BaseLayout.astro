@@ -1,0 +1,99 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+import '../styles/site-fixes.css';
+
+type Props = {
+  title?: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+};
+
+const siteUrl = 'https://www.bisdorf.org';
+const siteName = 'Joshua A. Bisdorf';
+const defaultDescription =
+  'Software engineer focused on machine learning, computer vision, cybersecurity, networking, cloud computing, and software systems.';
+const title = Astro.props.title ?? siteName;
+const description = Astro.props.description ?? defaultDescription;
+const pageTitle =
+  title === 'Home' || title === siteName
+    ? `${siteName} | Software Engineer`
+    : `${title} | ${siteName}`;
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const ogImageUrl = new URL(Astro.props.image ?? '/og-image.png', siteUrl).toString();
+const ogImageAlt = Astro.props.imageAlt ?? 'Joshua A. Bisdorf — Software Engineer';
+const ogType = Astro.props.type ?? 'website';
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: siteName,
+  url: siteUrl,
+  email: 'mailto:joshua@bisdorf.org',
+  jobTitle: 'Software Engineer',
+  sameAs: ['https://github.com/joshuabisdorf', 'https://www.linkedin.com/in/joshuabisdorf'],
+  alumniOf: [
+    {
+      '@type': 'CollegeOrUniversity',
+      name: 'University of Michigan',
+    },
+  ],
+  affiliation: {
+    '@type': 'Organization',
+    name: 'KBR',
+  },
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#0b0d10" />
+
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content={ogImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <Navbar />
+      <main class="site-main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The requested page could not be found on bisdorf.org."
+>
+  <section class="page-hero container not-found-hero">
+    <h1>Page not found</h1>
+    <p>The page may have moved, or the URL may be incorrect.</p>
+    <div class="actions">
+      <a class="button button--primary" href="/projects">View projects</a>
+      <a class="button" href="/">Return home</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found-hero {
+    min-height: 62vh;
+  }
+</style>

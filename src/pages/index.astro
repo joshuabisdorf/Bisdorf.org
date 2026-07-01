@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Home"
+  description="Joshua A. Bisdorf is a Software Engineer at KBR and M.S. Computer Science student at UT Austin."
+>
+  <section class="page-hero container page-hero--home home-hero">
+    <h1 class="home-hero__title">Joshua A. Bisdorf</h1>
+
+    <div class="home-hero__body">
+      <div class="home-hero__content">
+        <p class="home-hero__summary">
+          Software engineer focused on machine learning, computer vision, cybersecurity, networking,
+          cloud computing, and software systems.
+        </p>
+        <div class="home-minimal__details">
+          <p>Software Engineer at KBR</p>
+          <p>M.S. Computer Science Student at UT Austin</p>
+          <p>B.S.E. Computer Science, University of Michigan</p>
+        </div>
+      </div>
+
+      <figure class="home-hero__portrait" aria-label="Professional headshot of Joshua A. Bisdorf">
+        <img
+          src="/images/joshua-headshot.jpg"
+          alt="Professional headshot of Joshua A. Bisdorf"
+          width="680"
+          height="850"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </figure>
+    </div>
+  </section>
+</BaseLayout>

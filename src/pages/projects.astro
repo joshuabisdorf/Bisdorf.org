@@ -1,0 +1,526 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  getProjectClassificationSlug,
+  getProjectCourseClassificationOptions,
+  getProjectImage,
+  getProjectSeason,
+  getSeasonSortValue,
+  projects,
+} from '../data/projects';
+
+const projectLanguageNames = [
+  'Blueprints',
+  'C',
+  'C#',
+  'C++',
+  'CSS',
+  'Java',
+  'JavaScript',
+  'LC2K Assembly',
+  'Python',
+  'Shell',
+  'SQL',
+  'TypeScript',
+  'Verilog',
+];
+const getProjectLanguages = (technologies: string[]) =>
+  projectLanguageNames.filter((language) => technologies.includes(language));
+const projectLanguageOptions = projectLanguageNames.filter((language) =>
+  projects.some((project) => project.technologies.includes(language)),
+);
+const sortedCourseClassificationOptions = getProjectCourseClassificationOptions(projects);
+const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.title));
+---
+
+<BaseLayout title="Projects" description="Selected technical projects by Joshua Bisdorf.">
+  <section class="page-hero container">
+    <h1>Projects</h1>
+    <p>A collection of software, engineering, systems, and extended reality projects.</p>
+  </section>
+
+  <section class="section section--bordered" aria-label="Project list">
+    <div class="container">
+      <form class="project-controls card" role="search" aria-label="Search and filter projects">
+        <div class="project-controls__row project-controls__row--filters" aria-label="Project filters">
+          <label>
+            <span>Organization</span>
+            <select id="project-organization">
+              <option value="all">All organizations</option>
+              <option value="personal">Personal</option>
+              <option value="university-of-michigan">University of Michigan</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Course / Classification</span>
+            <select id="project-course">
+              <option value="all">All courses / classifications</option>
+              {
+                sortedCourseClassificationOptions.map((option) => (
+                  <option value={option.slug}>{option.label}</option>
+                ))
+              }
+            </select>
+          </label>
+
+          <label>
+            <span>Language</span>
+            <select id="project-language">
+              <option value="all">All languages</option>
+              {projectLanguageOptions.map((language) => <option value={language}>{language}</option>)}
+            </select>
+          </label>
+        </div>
+
+        <div class="project-controls__row project-controls__row--search" aria-label="Project search and sort">
+          <label>
+            <span>Search</span>
+            <div class="project-search-field">
+              <input
+                id="project-search"
+                type="search"
+                placeholder="Search by title, summary, or technology"
+                autocomplete="off"
+              />
+              <button
+                id="project-search-clear"
+                class="project-search-clear"
+                type="button"
+                aria-label="Clear project search"
+                hidden
+              >
+                ×
+              </button>
+            </div>
+          </label>
+
+          <label>
+            <span>Sort</span>
+            <select id="project-sort">
+              <option value="alphabetical">Alphabetical</option>
+              <option value="chronological">Chronological</option>
+              <option value="reverse-alphabetical">Reverse alphabetical</option>
+              <option value="reverse-chronological">Reverse chronological</option>
+            </select>
+          </label>
+        </div>
+      </form>
+
+      <p class="project-count" id="project-count" aria-live="polite">
+        Showing {sortedProjects.length} projects.
+      </p>
+
+      <div class="project-list" id="project-list">
+        {
+          sortedProjects.map((project) => {
+            const image = getProjectImage(project);
+            const classificationLabel = project.classification;
+            const classificationCode = project.courseCode ?? project.classification;
+            const classificationValue = project.detail.slug;
+            const organizationLabel = project.organization;
+            const organizationValue = getProjectClassificationSlug(project.organization);
+            const seasonLabel = getProjectSeason(project);
+            const projectMetaItems = [organizationLabel, classificationLabel, seasonLabel].filter(Boolean);
+            const projectLanguages = getProjectLanguages(project.technologies);
+            const searchText = [
+              project.title,
+              project.summary,
+              ...project.technologies,
+              organizationLabel,
+              classificationLabel,
+              classificationCode,
+              seasonLabel,
+              ...projectLanguages,
+            ]
+              .filter(Boolean)
+              .join(' ')
+              .toLowerCase();
+
+            return (
+              <a
+                class="project-row project-card-link card"
+                href={project.detail.path}
+                aria-label={`View ${project.title} project`}
+                data-project-card
+                data-title={project.title.toLowerCase()}
+                data-organization={organizationValue}
+                data-course={classificationValue}
+                data-languages={projectLanguages.join('|')}
+                data-term-sort={getSeasonSortValue(project)}
+                data-search={searchText}
+              >
+                <div
+                  class="project-image"
+                  style={`--image-accent: ${image.accent};`}
+                  aria-label={image.alt}
+                >
+                  {image.src ? (
+                    <img src={image.src} alt={image.alt} loading="lazy" />
+                  ) : (
+                    <span>{image.label}</span>
+                  )}
+                </div>
+                <div class="project-copy">
+                  <div>
+                    <div class="project-meta" aria-label="Project metadata">
+                      {projectMetaItems.map((item) => (
+                        <span>{item}</span>
+                      ))}
+                    </div>
+                    <h2>{project.title}</h2>
+                  </div>
+                  <div class="pills">
+                    {project.technologies.map((technology) => (
+                      <span class="pill">{technology}</span>
+                    ))}
+                  </div>
+                  <p>{project.summary}</p>
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <p class="project-empty card" id="project-empty" hidden>
+        No projects match the current filters.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  const controlsForm = document.querySelector('.project-controls');
+  const searchInput = document.querySelector('#project-search');
+  const clearSearchButton = document.querySelector('#project-search-clear');
+  const organizationSelect = document.querySelector('#project-organization');
+  const courseSelect = document.querySelector('#project-course');
+  const languageSelect = document.querySelector('#project-language');
+  const sortSelect = document.querySelector('#project-sort');
+  const list = document.querySelector('#project-list');
+  const count = document.querySelector('#project-count');
+  const empty = document.querySelector('#project-empty');
+  const cards = Array.from(document.querySelectorAll('[data-project-card]'));
+  const courseOptions = Array.from(courseSelect.options).filter((option) => option.value !== 'all');
+  const languageOptions = Array.from(languageSelect.options).filter((option) => option.value !== 'all');
+
+  controlsForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+  });
+
+  clearSearchButton.addEventListener('click', () => {
+    searchInput.value = '';
+    updateProjects();
+    searchInput.focus();
+  });
+
+  function getCardLanguages(card) {
+    return (card.dataset.languages || '').split('|').filter(Boolean);
+  }
+
+  function matchesOrganization(card, organization) {
+    return organization === 'all' || card.dataset.organization === organization;
+  }
+
+  function matchesCourse(card, course) {
+    return course === 'all' || card.dataset.course === course;
+  }
+
+  function matchesLanguage(card, language) {
+    return language === 'all' || getCardLanguages(card).includes(language);
+  }
+
+  function compareTitles(a, b, direction = 1) {
+    return direction * a.dataset.title.localeCompare(b.dataset.title);
+  }
+
+  function compareChronology(a, b, direction = 1) {
+    const aTerm = Number(a.dataset.termSort || '0');
+    const bTerm = Number(b.dataset.termSort || '0');
+    const aMissingTerm = aTerm === 0;
+    const bMissingTerm = bTerm === 0;
+
+    if (aMissingTerm && !bMissingTerm) return 1;
+    if (!aMissingTerm && bMissingTerm) return -1;
+
+    return direction * (aTerm - bTerm) || compareTitles(a, b);
+  }
+
+  function compareCards(a, b) {
+    const sortValue = sortSelect.value;
+
+    if (sortValue === 'reverse-alphabetical') return compareTitles(a, b, -1);
+    if (sortValue === 'chronological') return compareChronology(a, b, 1);
+    if (sortValue === 'reverse-chronological') return compareChronology(a, b, -1);
+
+    return compareTitles(a, b);
+  }
+
+  function setOptionAvailability(option, isAvailable) {
+    option.hidden = !isAvailable;
+    option.disabled = !isAvailable;
+  }
+
+  function updateFacetOptions() {
+    let changed = false;
+
+    do {
+      changed = false;
+      const organization = organizationSelect.value;
+      const course = courseSelect.value;
+      const language = languageSelect.value;
+      let selectedCourseIsAvailable = course === 'all';
+      let selectedLanguageIsAvailable = language === 'all';
+
+      courseOptions.forEach((option) => {
+        const isAvailable = cards.some(
+          (card) =>
+            card.dataset.course === option.value &&
+            matchesOrganization(card, organization) &&
+            matchesLanguage(card, language),
+        );
+
+        setOptionAvailability(option, isAvailable);
+
+        if (option.value === course && isAvailable) {
+          selectedCourseIsAvailable = true;
+        }
+      });
+
+      if (!selectedCourseIsAvailable) {
+        courseSelect.value = 'all';
+        changed = true;
+      }
+
+      const nextCourse = courseSelect.value;
+
+      languageOptions.forEach((option) => {
+        const isAvailable = cards.some(
+          (card) =>
+            getCardLanguages(card).includes(option.value) &&
+            matchesOrganization(card, organization) &&
+            matchesCourse(card, nextCourse),
+        );
+
+        setOptionAvailability(option, isAvailable);
+
+        if (option.value === language && isAvailable) {
+          selectedLanguageIsAvailable = true;
+        }
+      });
+
+      if (!selectedLanguageIsAvailable) {
+        languageSelect.value = 'all';
+        changed = true;
+      }
+    } while (changed);
+  }
+
+  function updateProjects() {
+    const query = searchInput.value.trim().toLowerCase();
+    updateFacetOptions();
+
+    const organization = organizationSelect.value;
+    const course = courseSelect.value;
+    const language = languageSelect.value;
+
+    clearSearchButton.hidden = searchInput.value.length === 0;
+
+    const visibleCards = cards.filter((card) => {
+      const visible =
+        (!query || card.dataset.search.includes(query)) &&
+        matchesOrganization(card, organization) &&
+        matchesCourse(card, course) &&
+        matchesLanguage(card, language);
+
+      card.hidden = !visible;
+      return visible;
+    });
+
+    [...cards].sort(compareCards).forEach((card) => list.append(card));
+    count.textContent = `Showing ${visibleCards.length} project${visibleCards.length === 1 ? '' : 's'}.`;
+    empty.hidden = visibleCards.length !== 0;
+  }
+
+  [searchInput, organizationSelect, courseSelect, languageSelect, sortSelect].forEach((control) => {
+    control.addEventListener('input', updateProjects);
+    control.addEventListener('change', updateProjects);
+  });
+
+  updateProjects();
+</script>
+
+<style>
+  .project-controls {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .project-controls__row {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .project-controls__row--filters {
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
+  }
+
+  .project-controls__row--search {
+    grid-template-columns: minmax(220px, 1.6fr) minmax(150px, 0.7fr);
+  }
+
+  .project-controls label {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .project-controls span,
+  .project-meta span {
+    color: var(--muted);
+    font-size: 0.86rem;
+    font-weight: 700;
+  }
+
+  .project-controls select,
+  .project-search-field input {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: rgba(17, 21, 26, 0.9);
+    color: var(--text);
+    padding: 0.95rem 1rem;
+    outline: none;
+  }
+
+  .project-search-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .project-search-field input {
+    padding-right: 3rem;
+  }
+
+  .project-search-clear {
+    position: absolute;
+    right: 0.65rem;
+    top: 50%;
+    display: grid;
+    width: 1.8rem;
+    height: 1.8rem;
+    place-items: center;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--muted);
+    font-size: 1.2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .project-search-clear:hover,
+  .project-search-clear:focus-visible {
+    color: var(--text);
+    background: rgba(255, 255, 255, 0.14);
+  }
+
+  .project-count {
+    margin: 0 0 1rem;
+    color: var(--muted);
+  }
+
+  .project-list {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .project-card-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .project-row {
+    display: grid;
+    grid-template-columns: 180px minmax(0, 1fr);
+    gap: 1.25rem;
+    align-items: stretch;
+    padding: 1rem;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .project-row:hover {
+    border-color: rgba(138, 180, 255, 0.45);
+    transform: translateY(-2px);
+  }
+
+  .project-image {
+    position: relative;
+    display: grid;
+    min-height: 118px;
+    overflow: hidden;
+    place-items: center;
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 25% 25%, color-mix(in srgb, var(--image-accent) 24%, transparent), transparent 35%),
+      linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    letter-spacing: 0.02em;
+    text-align: center;
+  }
+
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project-copy {
+    display: grid;
+    gap: 0.7rem;
+  }
+
+  .project-copy h2 {
+    margin: 0.15rem 0 0;
+  }
+
+  .project-copy p {
+    margin: 0;
+    color: var(--muted);
+  }
+
+  .project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .project-meta span:not(:last-child)::after {
+    content: '|';
+    margin-left: 0.4rem;
+    color: var(--border-strong);
+  }
+
+  .project-empty {
+    margin-top: 1rem;
+    color: var(--muted);
+  }
+
+  @media (max-width: 720px) {
+    .project-controls__row--filters,
+    .project-controls__row--search,
+    .project-row {
+      grid-template-columns: 1fr;
+    }
+
+    .project-image {
+      min-height: 160px;
+    }
+  }
+</style>

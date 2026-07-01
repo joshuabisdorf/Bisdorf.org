@@ -1,0 +1,281 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getProjectClassificationLabel, getProjectImage, type Project } from '../data/projects';
+
+type Props = {
+  project: Project;
+  description?: string;
+};
+
+const { project, description = project.summary } = Astro.props as Props;
+
+const image = getProjectImage(project);
+const classificationLabel = getProjectClassificationLabel(project);
+const seasonLabel = project.season ?? 'Independent';
+const eyebrowDetail = project.courseCode ?? project.classification;
+const eyebrow = `Projects / ${project.organization} / ${eyebrowDetail}`;
+const overview = project.overview ?? project.summary;
+const leadingTechnologies = project.technologies.slice(0, 4);
+const defaultWhatBuilt = `I built ${project.title} as a ${project.classification.toLowerCase()} project, using the project requirements and available artifacts as the source of truth for the implementation.`;
+const whatBuiltText = project.whatBuilt ?? defaultWhatBuilt;
+const defaultHighlights = [
+  project.summary,
+  leadingTechnologies.length > 1
+    ? `Applied ${leadingTechnologies.slice(0, -1).join(', ')}, and ${leadingTechnologies[leadingTechnologies.length - 1]} to the implementation.`
+    : `Applied ${leadingTechnologies[0] ?? project.classification} to the implementation.`,
+  'Organized the work around the required behavior, inputs, outputs, and validation cases.',
+];
+const visibleHighlights = project.highlights?.length ? project.highlights : defaultHighlights;
+const extraDetails = project.extraDetails ?? [];
+const extraSections = project.extraSections ?? [];
+const embeddedVideos = project.embeddedVideos ?? [];
+---
+
+<BaseLayout title={project.title} description={description}>
+  <section class="page-hero container">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{project.title}</h1>
+    <p>{project.summary}</p>
+  </section>
+
+  <section class="section section--bordered">
+    <div class="container project-detail">
+      <div class="card project-summary">
+        <div
+          class="project-image"
+          style={`--image-accent: ${image.accent};`}
+          aria-label={image.alt}
+        >
+          {
+            image.src ? (
+              <img src={image.src} alt={image.alt} loading="lazy" />
+            ) : (
+              <span>{image.label}</span>
+            )
+          }
+        </div>
+        <div>
+          <h2>Overview</h2>
+          <p>{overview}</p>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <section class="card detail-card">
+          <h2>Project Details</h2>
+          <dl>
+            <div>
+              <dt>Organization</dt>
+              <dd>{project.organization}</dd>
+            </div>
+            <div>
+              <dt>Classification</dt>
+              <dd>{classificationLabel}</dd>
+            </div>
+            <div>
+              <dt>Season</dt>
+              <dd>{seasonLabel}</dd>
+            </div>
+            {
+              extraDetails.map((detail) => (
+                <div>
+                  <dt>{detail.label}</dt>
+                  <dd>{detail.value}</dd>
+                </div>
+              ))
+            }
+          </dl>
+        </section>
+
+        <section class="card detail-card">
+          <h2>Technologies</h2>
+          <div class="pills">
+            {project.technologies.map((technology) => <span class="pill">{technology}</span>)}
+          </div>
+        </section>
+      </div>
+
+      <section class="card detail-card">
+        <h2>What I Built</h2>
+        <p>{whatBuiltText}</p>
+        <ul class="highlight-list">
+          {visibleHighlights.map((highlight) => <li>{highlight}</li>)}
+        </ul>
+      </section>
+
+      {
+        embeddedVideos.map((video) => (
+          <section class="card detail-card">
+            <h2>{video.title}</h2>
+            <div class="video-embed">
+              <iframe
+                src={video.src}
+                title={video.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+                loading="lazy"
+              />
+            </div>
+          </section>
+        ))
+      }
+
+      {
+        extraSections.map((section) => (
+          <section class="card detail-card">
+            <h2>{section.title}</h2>
+            <p>{section.content}</p>
+          </section>
+        ))
+      }
+
+      {
+        project.resources && project.resources.length > 0 && (
+          <section class="card detail-card">
+            <h2>Resources</h2>
+            <ul class="resource-list">
+              {project.resources.map((resource) => (
+                <li>
+                  {resource.href ? (
+                    <a href={resource.href} target="_blank" rel="noreferrer">
+                      {resource.label}
+                    </a>
+                  ) : (
+                    <span>{resource.label}</span>
+                  )}
+                  {resource.note && <span>{resource.note}</span>}
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .project-detail {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .project-summary {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .project-image {
+    display: grid;
+    min-height: 150px;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background:
+      radial-gradient(
+        circle at top left,
+        color-mix(in srgb, var(--image-accent) 44%, transparent),
+        transparent 65%
+      ),
+      linear-gradient(135deg, rgba(17, 21, 26, 0.9), rgba(22, 27, 34, 0.98));
+  }
+
+  .project-image span {
+    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+  }
+
+  .project-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .detail-card {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+  }
+
+  .detail-card h2,
+  .project-summary h2 {
+    margin: 0;
+  }
+
+  .detail-card p,
+  .project-summary p,
+  .detail-card ul,
+  .detail-card dl {
+    margin: 0;
+  }
+
+  .video-embed {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: #000;
+  }
+
+  .video-embed iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .highlight-list {
+    display: grid;
+    gap: 0.6rem;
+    list-style: disc;
+    padding-left: 1.25rem;
+  }
+
+  dl {
+    display: grid;
+    gap: 0.8rem;
+  }
+
+  dt {
+    color: var(--muted);
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .resource-list {
+    display: grid;
+    gap: 0.8rem;
+    padding-left: 1.25rem;
+  }
+
+  .resource-list span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  @media (max-width: 760px) {
+    .project-summary,
+    .detail-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

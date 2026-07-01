@@ -1,0 +1,19 @@
+---
+import ProjectDetailPage from '../../components/ProjectDetailPage.astro';
+import { projects, type Project } from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((project) => {
+    const slug = project.detail.path.replace(/^\/projects\/?/, '').replace(/\/$/, '');
+
+    return {
+      params: { slug },
+      props: { project },
+    };
+  });
+}
+
+const { project } = Astro.props as { project: Project };
+---
+
+<ProjectDetailPage project={project} />

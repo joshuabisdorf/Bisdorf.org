@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const contacts = [
+  {
+    label: 'Email',
+    display: 'joshua@bisdorf.org',
+    href: 'mailto:joshua@bisdorf.org',
+  },
+  {
+    label: 'LinkedIn',
+    display: 'linkedin.com/in/joshuabisdorf',
+    href: 'https://www.linkedin.com/in/joshuabisdorf',
+  },
+  {
+    label: 'GitHub',
+    display: 'github.com/joshuabisdorf',
+    href: 'https://github.com/joshuabisdorf',
+  },
+];
+---
+
+<BaseLayout title="Contact" description="Contact Joshua Bisdorf.">
+  <section class="page-hero container">
+    <h1>Contact</h1>
+    <p>
+      Professional inquiries, collaboration opportunities, and technical conversations are welcome.
+    </p>
+  </section>
+
+  <section class="section section--bordered">
+    <div class="container contact-list">
+      {
+        contacts.map((contact) => (
+          <a
+            class="contact-row"
+            href={contact.href}
+            target={contact.label === 'Email' ? undefined : '_blank'}
+            rel={contact.label === 'Email' ? undefined : 'noreferrer'}
+          >
+            <span>{contact.label}</span>
+            <strong>{contact.display}</strong>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
