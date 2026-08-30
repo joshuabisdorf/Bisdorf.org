@@ -11,62 +11,81 @@ const links = [
 ---
 
 <header class="navbar">
-  <div class="container navbar__inner">
-    <nav class="navbar__links" aria-label="Primary navigation">
-      {
-        links.map((link) => {
-          const isActive =
-            link.href === '/' ? currentPath === '/' : currentPath.startsWith(link.href);
-
-          return (
-            <a
-              href={link.href}
-              class:list={{ active: isActive }}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              {link.label}
-            </a>
-          );
-        })
-      }
-    </nav>
+  <div class="container navbar__mobile-bar">
+    <button
+      id="navbar-menu-toggle"
+      class="navbar__menu-toggle"
+      type="button"
+      aria-label="Open navigation menu"
+      aria-expanded="false"
+      aria-controls="navbar-menu-panel"
+    >
+      <span class="navbar__menu-bar"></span>
+      <span class="navbar__menu-bar"></span>
+      <span class="navbar__menu-bar"></span>
+    </button>
   </div>
 
-  <label class="theme-switch" title="Switch color theme">
-    <span class="sr-only">Light mode</span>
-    <input
-      id="theme-toggle"
-      class="theme-switch__input"
-      type="checkbox"
-      role="switch"
-      aria-label="Light mode"
-    />
-    <span class="theme-switch__track" aria-hidden="true">
-      <svg
-        class="theme-switch__moon"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-      </svg>
-      <svg
-        class="theme-switch__sun"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-      >
-        <circle cx="12" cy="12" r="4"></circle>
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
-      </svg>
-      <span class="theme-switch__thumb"></span>
-    </span>
-  </label>
+  <div id="navbar-menu-panel" class="navbar__panel" data-open="false">
+    <div class="container navbar__inner">
+      <nav class="navbar__links" aria-label="Primary navigation">
+        {
+          links.map((link) => {
+            const isActive =
+              link.href === '/' ? currentPath === '/' : currentPath.startsWith(link.href);
+
+            return (
+              <a
+                href={link.href}
+                class:list={{ active: isActive }}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                {link.label}
+              </a>
+            );
+          })
+        }
+      </nav>
+
+      <div class="navbar__theme-row">
+        <label class="theme-switch" title="Switch color theme">
+          <span class="sr-only">Light mode</span>
+          <input
+            id="theme-toggle"
+            class="theme-switch__input"
+            type="checkbox"
+            role="switch"
+            aria-label="Light mode"
+          />
+          <span class="theme-switch__track" aria-hidden="true">
+            <svg
+              class="theme-switch__moon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+            <svg
+              class="theme-switch__sun"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            >
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+            </svg>
+            <span class="theme-switch__thumb"></span>
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
 </header>
 
 <script is:inline>
@@ -74,9 +93,10 @@ const links = [
     const storageKey = 'bisdorf-theme';
     const darkThemeColor = '#0b0d10';
     const lightThemeColor = '#f6f8fb';
-    const toggle = document.getElementById('theme-toggle');
-
-    if (!(toggle instanceof HTMLInputElement)) return;
+    const themeToggle = document.getElementById('theme-toggle');
+    const menuToggle = document.getElementById('navbar-menu-toggle');
+    const menuPanel = document.getElementById('navbar-menu-panel');
+    const navLinks = document.querySelectorAll('.navbar__links a');
 
     /**
      * RME
@@ -99,8 +119,10 @@ const links = [
      * - None.
      */
     function setTheme(theme) {
+      if (!(themeToggle instanceof HTMLInputElement)) return;
+
       document.documentElement.dataset.theme = theme;
-      toggle.checked = theme === 'light';
+      themeToggle.checked = theme === 'light';
 
       const themeColor = document.querySelector('meta[name="theme-color"]');
       themeColor?.setAttribute('content', theme === 'light' ? lightThemeColor : darkThemeColor);
@@ -112,11 +134,267 @@ const links = [
       }
     }
 
-    const currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
-    toggle.checked = currentTheme === 'light';
+    /**
+     * RME
+     * Requires:
+     * - The theme switch input exists.
+     *
+     * Modifies:
+     * - The active site theme through setTheme.
+     *
+     * Effects:
+     * - Responds to a user changing the theme switch.
+     *
+     * Inputs:
+     * - None.
+     *
+     * Outputs:
+     * - None.
+     */
+    function handleThemeChange() {
+      if (!(themeToggle instanceof HTMLInputElement)) return;
+      setTheme(themeToggle.checked ? 'light' : 'dark');
+    }
 
-    toggle.addEventListener('change', () => {
-      setTheme(toggle.checked ? 'light' : 'dark');
-    });
+    /**
+     * RME
+     * Requires:
+     * - The mobile menu button and menu panel exist.
+     *
+     * Modifies:
+     * - The menu panel data-open state.
+     * - The menu button aria-expanded and aria-label attributes.
+     *
+     * Effects:
+     * - Opens or closes the mobile navigation dropdown.
+     *
+     * Inputs:
+     * - isOpen: Whether the mobile menu should be open.
+     *
+     * Outputs:
+     * - None.
+     */
+    function setMenuOpen(isOpen) {
+      if (!(menuToggle instanceof HTMLButtonElement) || !(menuPanel instanceof HTMLElement)) return;
+
+      menuPanel.dataset.open = isOpen ? 'true' : 'false';
+      menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    }
+
+    /**
+     * RME
+     * Requires:
+     * - The mobile menu button and menu panel exist.
+     *
+     * Modifies:
+     * - The mobile menu open state through setMenuOpen.
+     *
+     * Effects:
+     * - Toggles the mobile navigation dropdown after a user presses the hamburger button.
+     *
+     * Inputs:
+     * - None.
+     *
+     * Outputs:
+     * - None.
+     */
+    function handleMenuToggle() {
+      if (!(menuPanel instanceof HTMLElement)) return;
+      setMenuOpen(menuPanel.dataset.open !== 'true');
+    }
+
+    /**
+     * RME
+     * Requires:
+     * - The mobile menu button and menu panel exist.
+     *
+     * Modifies:
+     * - The mobile menu open state.
+     * - Keyboard focus when Escape closes the menu.
+     *
+     * Effects:
+     * - Closes the mobile menu when Escape is pressed.
+     *
+     * Inputs:
+     * - event: Keyboard event from the document.
+     *
+     * Outputs:
+     * - None.
+     */
+    function handleMenuKeydown(event) {
+      if (
+        event.key !== 'Escape' ||
+        !(menuPanel instanceof HTMLElement) ||
+        menuPanel.dataset.open !== 'true'
+      ) {
+        return;
+      }
+
+      setMenuOpen(false);
+      if (menuToggle instanceof HTMLButtonElement) menuToggle.focus();
+    }
+
+    /**
+     * RME
+     * Requires:
+     * - The mobile menu exists.
+     *
+     * Modifies:
+     * - The mobile menu open state.
+     *
+     * Effects:
+     * - Closes the menu after a navigation destination is selected.
+     *
+     * Inputs:
+     * - None.
+     *
+     * Outputs:
+     * - None.
+     */
+    function handleNavLinkClick() {
+      setMenuOpen(false);
+    }
+
+    if (themeToggle instanceof HTMLInputElement) {
+      const currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+      themeToggle.checked = currentTheme === 'light';
+      themeToggle.addEventListener('change', handleThemeChange);
+    }
+
+    if (menuToggle instanceof HTMLButtonElement && menuPanel instanceof HTMLElement) {
+      menuToggle.addEventListener('click', handleMenuToggle);
+      document.addEventListener('keydown', handleMenuKeydown);
+      navLinks.forEach((link) => link.addEventListener('click', handleNavLinkClick));
+    }
   })();
 </script>
+
+<style>
+  .navbar__mobile-bar {
+    display: none;
+  }
+
+  .navbar__panel {
+    display: block;
+  }
+
+  .navbar__inner {
+    position: static;
+  }
+
+  .navbar__theme-row {
+    display: contents;
+  }
+
+  .navbar__menu-toggle {
+    display: none;
+  }
+
+  @media (max-width: 760px) {
+    .navbar__mobile-bar {
+      display: flex;
+      min-height: 3.75rem;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .navbar__menu-toggle {
+      display: inline-grid;
+      width: 2.75rem;
+      height: 2.75rem;
+      place-content: center;
+      gap: 0.28rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--surface-soft);
+      color: var(--text);
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .navbar__menu-toggle:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .navbar__menu-bar {
+      display: block;
+      width: 1.1rem;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition:
+        transform 160ms ease,
+        opacity 160ms ease;
+    }
+
+    .navbar__menu-toggle[aria-expanded='true'] .navbar__menu-bar:nth-child(1) {
+      transform: translateY(0.38rem) rotate(45deg);
+    }
+
+    .navbar__menu-toggle[aria-expanded='true'] .navbar__menu-bar:nth-child(2) {
+      opacity: 0;
+    }
+
+    .navbar__menu-toggle[aria-expanded='true'] .navbar__menu-bar:nth-child(3) {
+      transform: translateY(-0.38rem) rotate(-45deg);
+    }
+
+    .navbar__panel {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      display: none;
+      border-top: 1px solid var(--navbar-border);
+      border-bottom: 1px solid var(--navbar-border);
+      background: var(--navbar-bg);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .navbar__panel[data-open='true'] {
+      display: block;
+    }
+
+    .navbar__inner {
+      display: grid;
+      gap: 0.75rem;
+      align-items: stretch;
+      padding: 0.75rem 0 1rem;
+    }
+
+    .navbar__links {
+      display: grid;
+      width: 100%;
+      max-width: none;
+      gap: 0.2rem;
+      overflow: visible;
+      padding: 0;
+    }
+
+    .navbar__links a {
+      width: 100%;
+      border-radius: 12px;
+      padding: 0.78rem 1rem;
+      text-align: center;
+    }
+
+    .navbar__theme-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-top: 1px solid var(--border);
+      padding: 0.8rem 1rem 0.15rem;
+    }
+
+    .theme-switch {
+      position: relative;
+      right: auto;
+      top: auto;
+      flex: 0 0 auto;
+      transform: none;
+    }
+  }
+</style>

@@ -45,7 +45,7 @@ html[data-theme='light'] {
   --body-gradient-start: #f8fafc;
   --body-gradient-mid: #f2f5f9;
   --body-gradient-end: #f6f8fb;
-  --ambient-accent: rgba(63, 111, 202, 0.12);
+  --ambient-accent: transparent;
   --surface: rgba(255, 255, 255, 0.78);
   --surface-soft: rgba(255, 255, 255, 0.84);
   --surface-strong: rgba(255, 255, 255, 0.94);
