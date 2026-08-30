@@ -430,10 +430,21 @@ textarea {
 
 @media (max-width: 760px) {
   .navbar__inner,
-  .site-footer__inner,
   .section__header {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .site-footer__inner {
+    align-items: center;
+    flex-direction: column;
+    gap: 0.65rem;
+    text-align: center;
+  }
+
+  .site-footer__links {
+    width: 100%;
+    justify-content: center;
   }
 
   .navbar__links {
