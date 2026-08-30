@@ -426,6 +426,10 @@ html {
   background: var(--surface) !important;
 }
 
+html[data-theme='light'] .resume-viewer {
+  background: #d4dbe4 !important;
+}
+
 .resume-page {
   box-shadow: var(--shadow-large) !important;
 }
