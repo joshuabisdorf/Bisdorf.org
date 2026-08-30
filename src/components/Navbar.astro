@@ -48,7 +48,6 @@ const links = [
       </nav>
 
       <div class="navbar__theme-row">
-        <span class="navbar__theme-label">Light mode</span>
         <label class="theme-switch" title="Switch color theme">
           <span class="sr-only">Light mode</span>
           <input
@@ -288,10 +287,6 @@ const links = [
     display: contents;
   }
 
-  .navbar__theme-label {
-    display: none;
-  }
-
   .navbar__menu-toggle {
     display: none;
   }
@@ -389,17 +384,9 @@ const links = [
     .navbar__theme-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
+      justify-content: center;
       border-top: 1px solid var(--border);
       padding: 0.8rem 1rem 0.15rem;
-    }
-
-    .navbar__theme-label {
-      display: inline;
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-weight: 700;
     }
 
     .theme-switch {
