@@ -29,6 +29,97 @@ const links = [
           );
         })
       }
+      <button
+        id="theme-toggle"
+        class="theme-toggle"
+        type="button"
+        aria-label="Switch to light mode"
+        title="Switch color theme"
+      >
+        <svg
+          class="theme-toggle__sun"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+        <svg
+          class="theme-toggle__moon"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
     </nav>
   </div>
 </header>
+
+<script is:inline>
+  (() => {
+    const storageKey = 'bisdorf-theme';
+    const darkThemeColor = '#0b0d10';
+    const lightThemeColor = '#f6f8fb';
+    const toggle = document.getElementById('theme-toggle');
+
+    if (!toggle) return;
+
+    /**
+     * RME
+     * Requires:
+     * - theme is "light" or "dark".
+     * - The theme toggle button exists.
+     *
+     * Modifies:
+     * - document.documentElement.dataset.theme.
+     * - Theme toggle accessibility text.
+     * - The theme-color meta tag content.
+     *
+     * Effects:
+     * - Persists the selected theme when storage is available.
+     *
+     * Inputs:
+     * - theme: Theme to activate.
+     *
+     * Outputs:
+     * - None.
+     */
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      toggle.setAttribute(
+        'aria-label',
+        theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode',
+      );
+
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      themeColor?.setAttribute('content', theme === 'light' ? lightThemeColor : darkThemeColor);
+
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch {
+        // Theme switching still works when storage is unavailable.
+      }
+    }
+
+    const currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+    toggle.setAttribute(
+      'aria-label',
+      currentTheme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode',
+    );
+
+    toggle.addEventListener('click', () => {
+      const nextTheme = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      setTheme(nextTheme);
+    });
+  })();
+</script>
