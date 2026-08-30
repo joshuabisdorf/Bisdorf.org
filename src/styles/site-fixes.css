@@ -307,6 +307,57 @@ html[data-theme='light'] .theme-toggle__moon {
   image-rendering: auto;
 }
 
+/* Page-level components that still declare dark surfaces use the theme tokens here. */
+.project-controls select,
+.project-search-field input {
+  background: var(--surface-strong) !important;
+  color: var(--text) !important;
+}
+
+.project-search-clear {
+  background: var(--control-overlay) !important;
+  color: var(--muted) !important;
+}
+
+.project-search-clear:hover,
+.project-search-clear:focus-visible {
+  background: var(--control-overlay-hover) !important;
+  color: var(--text) !important;
+}
+
+.project-list .project-image,
+.project-detail .project-image {
+  background:
+    radial-gradient(
+      circle at 25% 25%,
+      color-mix(in srgb, var(--image-accent, var(--accent)) 24%, transparent),
+      transparent 35%
+    ),
+    linear-gradient(135deg, var(--image-wash-start), var(--image-wash-end)) !important;
+}
+
+.project-detail .project-image {
+  background:
+    radial-gradient(
+      circle at top left,
+      color-mix(in srgb, var(--image-accent, var(--accent)) 44%, transparent),
+      transparent 65%
+    ),
+    linear-gradient(
+      135deg,
+      var(--placeholder-gradient-start),
+      var(--placeholder-gradient-end)
+    ) !important;
+}
+
+.resume-viewer {
+  background: var(--surface) !important;
+}
+
+.resume-page {
+  box-shadow: var(--shadow-large) !important;
+}
+
 @media (max-width: 760px) {
   .navbar__inner {
     align-items: center;
