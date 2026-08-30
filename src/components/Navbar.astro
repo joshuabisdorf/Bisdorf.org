@@ -292,11 +292,16 @@ const links = [
   }
 
   @media (max-width: 760px) {
+    .navbar {
+      background: var(--bg);
+      backdrop-filter: none;
+    }
+
     .navbar__mobile-bar {
       display: flex;
       min-height: 3.75rem;
       align-items: center;
-      justify-content: flex-end;
+      justify-content: flex-start;
     }
 
     .navbar__menu-toggle {
