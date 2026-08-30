@@ -95,11 +95,11 @@ html {
   pointer-events: none;
 }
 
-.theme-switch__moon {
+.theme-switch__sun {
   left: 0.46rem;
 }
 
-.theme-switch__sun {
+.theme-switch__moon {
   right: 0.43rem;
 }
 
@@ -435,6 +435,11 @@ html[data-theme='light'] .resume-viewer {
 }
 
 @media (max-width: 760px) {
+  .navbar__panel {
+    background: var(--bg) !important;
+    backdrop-filter: none !important;
+  }
+
   .navbar__inner {
     align-items: center;
   }
