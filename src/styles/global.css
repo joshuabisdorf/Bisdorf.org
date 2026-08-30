@@ -190,8 +190,8 @@ textarea {
   top: 0;
   z-index: 10;
   border-bottom: 1px solid var(--navbar-border);
-  background: var(--navbar-bg);
-  backdrop-filter: blur(18px);
+  background: var(--bg);
+  backdrop-filter: none;
 }
 
 .navbar__inner {
