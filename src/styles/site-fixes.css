@@ -95,11 +95,11 @@ html {
   pointer-events: none;
 }
 
-.theme-switch__moon {
+.theme-switch__sun {
   left: 0.46rem;
 }
 
-.theme-switch__sun {
+.theme-switch__moon {
   right: 0.43rem;
 }
 
