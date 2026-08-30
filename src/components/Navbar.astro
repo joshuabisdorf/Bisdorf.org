@@ -31,4 +31,92 @@ const links = [
       }
     </nav>
   </div>
+
+  <label class="theme-switch" title="Switch color theme">
+    <span class="sr-only">Light mode</span>
+    <input
+      id="theme-toggle"
+      class="theme-switch__input"
+      type="checkbox"
+      role="switch"
+      aria-label="Light mode"
+    />
+    <span class="theme-switch__track" aria-hidden="true">
+      <svg
+        class="theme-switch__moon"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+      </svg>
+      <svg
+        class="theme-switch__sun"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+      </svg>
+      <span class="theme-switch__thumb"></span>
+    </span>
+  </label>
 </header>
+
+<script is:inline>
+  (() => {
+    const storageKey = 'bisdorf-theme';
+    const darkThemeColor = '#0b0d10';
+    const lightThemeColor = '#f6f8fb';
+    const toggle = document.getElementById('theme-toggle');
+
+    if (!(toggle instanceof HTMLInputElement)) return;
+
+    /**
+     * RME
+     * Requires:
+     * - theme is "light" or "dark".
+     * - The theme switch input exists.
+     *
+     * Modifies:
+     * - document.documentElement.dataset.theme.
+     * - The theme switch checked state.
+     * - The theme-color meta tag content.
+     *
+     * Effects:
+     * - Persists the selected theme when storage is available.
+     *
+     * Inputs:
+     * - theme: Theme to activate.
+     *
+     * Outputs:
+     * - None.
+     */
+    function setTheme(theme) {
+      document.documentElement.dataset.theme = theme;
+      toggle.checked = theme === 'light';
+
+      const themeColor = document.querySelector('meta[name="theme-color"]');
+      themeColor?.setAttribute('content', theme === 'light' ? lightThemeColor : darkThemeColor);
+
+      try {
+        localStorage.setItem(storageKey, theme);
+      } catch {
+        // Theme switching still works when storage is unavailable.
+      }
+    }
+
+    const currentTheme = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark';
+    toggle.checked = currentTheme === 'light';
+
+    toggle.addEventListener('change', () => {
+      setTheme(toggle.checked ? 'light' : 'dark');
+    });
+  })();
+</script>

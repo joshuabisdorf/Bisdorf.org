@@ -48,13 +48,60 @@ const personSchema = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#0b0d10" />
+
+    <script is:inline>
+      (() => {
+        const storageKey = 'bisdorf-theme';
+        const darkThemeColor = '#0b0d10';
+        const lightThemeColor = '#f6f8fb';
+
+        /**
+         * RME
+         * Requires:
+         * - A browser environment with document available.
+         *
+         * Modifies:
+         * - document.documentElement.dataset.theme.
+         * - The theme-color meta tag content.
+         *
+         * Effects:
+         * - Applies the requested visual theme before the page renders.
+         *
+         * Inputs:
+         * - theme: "light" or "dark".
+         *
+         * Outputs:
+         * - None.
+         */
+        function applyTheme(theme) {
+          document.documentElement.dataset.theme = theme;
+          const themeColor = document.querySelector('meta[name="theme-color"]');
+          themeColor?.setAttribute('content', theme === 'light' ? lightThemeColor : darkThemeColor);
+        }
+
+        let savedTheme = null;
+
+        try {
+          savedTheme = localStorage.getItem(storageKey);
+        } catch {
+          savedTheme = null;
+        }
+
+        const systemTheme = window.matchMedia('(prefers-color-scheme: light)').matches
+          ? 'light'
+          : 'dark';
+        const initialTheme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : systemTheme;
+
+        applyTheme(initialTheme);
+      })();
+    </script>
 
     <link rel="canonical" href={canonicalUrl} />
 
