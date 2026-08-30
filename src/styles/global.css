@@ -13,7 +13,7 @@ html[data-theme='dark'] {
   --body-gradient-start: #0b0d10;
   --body-gradient-mid: #0d1014;
   --body-gradient-end: #0b0d10;
-  --ambient-accent: rgba(138, 180, 255, 0.12);
+  --ambient-accent: transparent;
   --surface: rgba(17, 21, 26, 0.66);
   --surface-soft: rgba(17, 21, 26, 0.72);
   --surface-strong: rgba(17, 21, 26, 0.9);
