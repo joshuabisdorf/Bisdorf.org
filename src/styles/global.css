@@ -1,4 +1,5 @@
-:root {
+:root,
+html[data-theme='dark'] {
   color-scheme: dark;
   --bg: #0b0d10;
   --bg-soft: #11151a;
@@ -9,8 +10,55 @@
   --border: #252c36;
   --accent: #8ab4ff;
   --accent-strong: #b7d0ff;
+  --body-gradient-start: #0b0d10;
+  --body-gradient-mid: #0d1014;
+  --body-gradient-end: #0b0d10;
+  --ambient-accent: rgba(138, 180, 255, 0.12);
+  --surface: rgba(17, 21, 26, 0.66);
+  --surface-soft: rgba(17, 21, 26, 0.72);
+  --surface-strong: rgba(17, 21, 26, 0.9);
+  --navbar-bg: rgba(11, 13, 16, 0.78);
+  --navbar-border: rgba(37, 44, 54, 0.78);
+  --control-overlay: rgba(255, 255, 255, 0.08);
+  --control-overlay-hover: rgba(255, 255, 255, 0.14);
+  --image-wash-start: rgba(255, 255, 255, 0.08);
+  --image-wash-end: rgba(255, 255, 255, 0.02);
+  --placeholder-gradient-start: rgba(17, 21, 26, 0.9);
+  --placeholder-gradient-end: rgba(22, 27, 34, 0.98);
+  --shadow-soft: 0 10px 32px rgba(0, 0, 0, 0.18);
+  --shadow-large: 0 24px 80px rgba(0, 0, 0, 0.28);
   --max-width: 1080px;
   --radius: 18px;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6f8fb;
+  --bg-soft: #ffffff;
+  --bg-softer: #edf2f7;
+  --text: #17202b;
+  --muted: #536172;
+  --subtle: #748194;
+  --border: #d8e0ea;
+  --accent: #3f6fca;
+  --accent-strong: #2853a5;
+  --body-gradient-start: #f8fafc;
+  --body-gradient-mid: #f2f5f9;
+  --body-gradient-end: #f6f8fb;
+  --ambient-accent: rgba(63, 111, 202, 0.12);
+  --surface: rgba(255, 255, 255, 0.78);
+  --surface-soft: rgba(255, 255, 255, 0.84);
+  --surface-strong: rgba(255, 255, 255, 0.94);
+  --navbar-bg: rgba(248, 250, 252, 0.84);
+  --navbar-border: rgba(216, 224, 234, 0.88);
+  --control-overlay: rgba(23, 32, 43, 0.06);
+  --control-overlay-hover: rgba(23, 32, 43, 0.11);
+  --image-wash-start: rgba(23, 32, 43, 0.055);
+  --image-wash-end: rgba(23, 32, 43, 0.015);
+  --placeholder-gradient-start: rgba(255, 255, 255, 0.94);
+  --placeholder-gradient-end: rgba(237, 242, 247, 0.98);
+  --shadow-soft: 0 10px 32px rgba(38, 50, 66, 0.1);
+  --shadow-large: 0 24px 80px rgba(38, 50, 66, 0.14);
 }
 
 * {
@@ -35,8 +83,13 @@ body {
   min-height: 100vh;
   margin: 0;
   background:
-    radial-gradient(circle at top left, rgba(138, 180, 255, 0.12), transparent 32rem),
-    linear-gradient(180deg, #0b0d10 0%, #0d1014 45%, #0b0d10 100%);
+    radial-gradient(circle at top left, var(--ambient-accent), transparent 32rem),
+    linear-gradient(
+      180deg,
+      var(--body-gradient-start) 0%,
+      var(--body-gradient-mid) 45%,
+      var(--body-gradient-end) 100%
+    );
   color: var(--text);
   line-height: 1.6;
 }
@@ -44,7 +97,8 @@ body {
 body,
 button,
 input,
-textarea {
+textarea,
+select {
   font: inherit;
 }
 
@@ -90,20 +144,26 @@ ul {
 }
 
 input,
+textarea,
+select {
+  border: 1px solid var(--border);
+  background: var(--surface-strong);
+  color: var(--text);
+}
+
+input,
 textarea {
   width: 100%;
-  border: 1px solid var(--border);
   border-radius: 14px;
-  background: rgba(17, 21, 26, 0.9);
-  color: var(--text);
   padding: 0.95rem 1rem;
   outline: none;
 }
 
 input:focus,
-textarea:focus {
-  border-color: rgba(138, 180, 255, 0.75);
-  box-shadow: 0 0 0 4px rgba(138, 180, 255, 0.12);
+textarea:focus,
+select:focus-visible {
+  border-color: color-mix(in srgb, var(--accent) 75%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 textarea {
@@ -129,8 +189,8 @@ textarea {
   position: sticky;
   top: 0;
   z-index: 10;
-  border-bottom: 1px solid rgba(37, 44, 54, 0.78);
-  background: rgba(11, 13, 16, 0.78);
+  border-bottom: 1px solid var(--navbar-border);
+  background: var(--navbar-bg);
   backdrop-filter: blur(18px);
 }
 
@@ -198,7 +258,7 @@ textarea {
 .pill {
   border: 1px solid var(--border);
   border-radius: 999px;
-  background: rgba(17, 21, 26, 0.72);
+  background: var(--surface-soft);
   color: var(--muted);
   padding: 0.5rem 0.8rem;
   font-size: 0.92rem;
@@ -230,14 +290,14 @@ textarea {
 
 .button:hover {
   transform: translateY(-1px);
-  border-color: rgba(138, 180, 255, 0.55);
+  border-color: color-mix(in srgb, var(--accent) 55%, transparent);
   background: var(--bg-softer);
   color: var(--text);
 }
 
 .button--primary {
-  border-color: rgba(138, 180, 255, 0.6);
-  background: rgba(138, 180, 255, 0.14);
+  border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
   color: var(--accent-strong);
 }
 
@@ -277,7 +337,7 @@ textarea {
 .card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: rgba(17, 21, 26, 0.66);
+  background: var(--surface);
   padding: 1.35rem;
 }
 
