@@ -35,12 +35,15 @@ html {
 }
 
 .theme-toggle {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
   display: inline-grid;
   place-items: center;
   width: 2.45rem;
   height: 2.45rem;
-  margin-left: 0.35rem;
   padding: 0;
+  transform: translateY(-50%);
   background: transparent;
   color: var(--muted);
   cursor: pointer;
@@ -361,11 +364,16 @@ html[data-theme='light'] .theme-toggle__moon {
 @media (max-width: 760px) {
   .navbar__inner {
     align-items: center;
+    padding-right: 3rem;
   }
 
   .navbar__links {
     width: auto;
     overflow-x: visible;
+  }
+
+  .theme-toggle {
+    right: 0.5rem;
   }
 
   .home-minimal {
