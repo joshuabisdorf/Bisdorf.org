@@ -435,6 +435,11 @@ html[data-theme='light'] .resume-viewer {
 }
 
 @media (max-width: 760px) {
+  .navbar__panel {
+    background: var(--bg) !important;
+    backdrop-filter: none !important;
+  }
+
   .navbar__inner {
     align-items: center;
   }
