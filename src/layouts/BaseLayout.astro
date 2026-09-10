@@ -13,15 +13,16 @@ type Props = {
 };
 
 const siteUrl = 'https://www.bisdorf.org';
-const siteName = 'Joshua A. Bisdorf';
+const siteName = 'Bisdorf';
+const personName = 'Joshua A. Bisdorf';
 const defaultDescription =
   'Software engineer focused on machine learning, computer vision, cybersecurity, networking, cloud computing, and software systems.';
-const title = Astro.props.title ?? siteName;
+const title = Astro.props.title ?? personName;
 const description = Astro.props.description ?? defaultDescription;
 const pageTitle =
-  title === 'Home' || title === siteName
-    ? `${siteName} | Software Engineer`
-    : `${title} | ${siteName}`;
+  title === 'Home' || title === personName
+    ? `${personName} | Software Engineer`
+    : `${title} | ${personName}`;
 const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageUrl = new URL(Astro.props.image ?? '/og-image.png', siteUrl).toString();
 const ogImageAlt = Astro.props.imageAlt ?? 'Joshua A. Bisdorf — Software Engineer';
@@ -29,7 +30,7 @@ const ogType = Astro.props.type ?? 'website';
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: siteName,
+  name: personName,
   url: siteUrl,
   email: 'mailto:joshua@bisdorf.org',
   jobTitle: 'Software Engineer',
@@ -44,6 +45,13 @@ const personSchema = {
     '@type': 'Organization',
     name: 'KBR',
   },
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: siteName,
+  alternateName: 'bisdorf.org',
+  url: `${siteUrl}/`,
 };
 ---
 
@@ -121,6 +129,7 @@ const personSchema = {
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
     <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
