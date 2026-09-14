@@ -23,10 +23,10 @@
   ],
   "author": "Joshua Bisdorf",
   "dependencies": {
-    "astro": "^7.2.9"
+    "astro": "^7.3.2"
   },
   "devDependencies": {
     "prettier": "^3.9.6",
-    "prettier-plugin-astro": "^0.14.1"
+    "prettier-plugin-astro": "^1.0.0"
   }
 }
