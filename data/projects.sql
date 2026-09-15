@@ -1006,5 +1006,5 @@ INSERT INTO project_technologies (project_id, technology, position) VALUES ('sec
 INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'OpenTelemetry', 7);
 INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Prometheus', 8);
 INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'GitHub repository', 'https://github.com/joshuabisdorf/Secure-AI-Gateway', 'repository', NULL, 0);
-INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'v1.0.0 release notes', 'https://github.com/joshuabisdorf/Secure-AI-Gateway/blob/v1.0.0/docs/release-notes-v1.0.0.md', 'resource', NULL, 1);
+INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'v1.0.0 release notes', 'https://github.com/joshuabisdorf/Secure-AI-Gateway/releases/tag/v1.0.0', 'resource', NULL, 1);
 INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'Architecture review', 'https://github.com/joshuabisdorf/Secure-AI-Gateway/blob/v1.0.0/docs/architecture.md', 'resource', NULL, 2);
