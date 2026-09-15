@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="About" description="About Joshua Bisdorf.">
+  <section class="page-hero container">
+    <h1>About Me</h1>
+    <p>
+      Software Engineer at KBR, M.S. Computer Science student at UT Austin, and University of
+      Michigan Computer Science graduate, magna cum laude.
+    </p>
+  </section>
+
+  <section class="about-photo-strip container" aria-label="Photos of Joshua Bisdorf">
+    <figure>
+      <img
+        src="/images/joshua-arizona.jpg"
+        alt="Joshua Bisdorf standing in the Arizona desert"
+        loading="lazy"
+      />
+      <figcaption>Arizona</figcaption>
+    </figure>
+    <figure>
+      <img
+        src="/images/joshua-bjj.jpg"
+        alt="Joshua Bisdorf at a Brazilian Jiu-Jitsu tournament"
+        loading="lazy"
+      />
+      <figcaption>Brazilian Jiu-Jitsu</figcaption>
+    </figure>
+  </section>
+
+  <section class="section section--bordered">
+    <div class="container" style="max-width: 760px; display: grid; gap: 1.5rem;">
+      <p>
+        I’m a Software Engineer at KBR, where I work on radar software supporting defense and
+        intelligence systems. Alongside my professional work, I’m pursuing an M.S. in Computer
+        Science at The University of Texas at Austin while working full-time in Ann Arbor, Michigan.
+      </p>
+
+      <p>
+        I earned my B.S.E. in Computer Science from the University of Michigan, graduating magna cum
+        laude, and have developed strong interests in artificial intelligence and machine learning,
+        cybersecurity, network security, and computer vision. I’m particularly interested in the
+        intersection of AI/ML and cloud computing, especially cloud-native AI systems and the
+        security of AI systems.
+      </p>
+
+      <p>
+        My technical background and interests include C++, Python, Linux, Docker, networking, cloud
+        computing, cybersecurity, and machine learning systems. I enjoy working on problems that sit
+        at the intersection of software engineering, infrastructure, and intelligent systems.
+      </p>
+
+      <!-- <p>
+        I chose UT Austin for two reasons: the flexibility to continue advancing my education while
+        working full-time, and the opportunity to deepen my connection to a region I hope to call
+        home someday. I’m especially interested in relocating to Texas, particularly the Austin
+        area, given its strong technology presence and alignment with my interests.
+      </p> -->
+
+      <p>
+        Outside of work and school, I train Brazilian Jiu-Jitsu and have a particular interest in
+        no-gi training, a natural extension of my decade-long wrestling background growing up.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

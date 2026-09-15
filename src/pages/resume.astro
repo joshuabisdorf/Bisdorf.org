@@ -1,0 +1,309 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const resumePdfPath = '/resume.pdf';
+---
+
+<BaseLayout title="Resume" description="Resume and professional highlights for Joshua Bisdorf.">
+  <section class="page-hero container resume-hero">
+    <h1>Resume</h1>
+
+    <div class="actions resume-actions">
+      <a
+        class="button button--primary"
+        id="download-resume"
+        href={resumePdfPath}
+        download="Joshua-Bisdorf_Resume.pdf"
+      >
+        Download Resume
+      </a>
+    </div>
+  </section>
+
+  <section class="section section--bordered resume-viewer-section">
+    <div class="container">
+      <div class="resume-viewer" aria-label="Inline resume PDF renderer">
+        <div id="resume-render-target" class="resume-render-target">
+          <p class="resume-render-status">Loading resume preview…</p>
+        </div>
+        <noscript>
+          <p class="resume-render-status">
+            JavaScript is required to render the inline resume preview.
+          </p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bordered">
+    <div class="container">
+      <div class="section__header">
+        <h2>Highlights</h2>
+      </div>
+
+      <div class="grid grid--three resume-highlights">
+        <article class="card">
+          <h3>Education</h3>
+          <p>
+            M.S. Computer Science student at The University of Texas at Austin, expected May 2028.
+          </p>
+          <p>B.S.E. Computer Science graduate from the University of Michigan with a 3.67 GPA.</p>
+        </article>
+
+        <article class="card">
+          <h3>Experience</h3>
+          <p>
+            Software Engineer at KBR working across radar software, signal processing, machine
+            learning pipelines, simulation, and computer vision.
+          </p>
+          <p>
+            Previously interned at KBR and Harman International in software engineering, security,
+            tooling, and hardware/software integration roles.
+          </p>
+        </article>
+
+        <article class="card">
+          <h3>Focus Areas</h3>
+          <div class="card__meta resume-focus-list" aria-label="Focus areas">
+            <span>Software Engineering</span>
+            <span>Machine Learning</span>
+            <span>Computer Vision</span>
+            <span>Cybersecurity</span>
+            <span>Network Security</span>
+            <span>Signal Processing</span>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style is:global>
+  .resume-hero {
+    padding-bottom: 2.5rem;
+  }
+
+  .resume-actions {
+    margin-top: 1.6rem;
+  }
+
+  .resume-viewer-section {
+    padding-top: 2.5rem;
+  }
+
+  .resume-viewer {
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: rgba(17, 21, 26, 0.66);
+    padding: clamp(0.6rem, 2vw, 1.25rem);
+  }
+
+  .resume-render-target {
+    display: grid;
+    justify-items: center;
+    gap: 1.25rem;
+  }
+
+  .resume-page {
+    position: relative;
+    overflow: hidden;
+    width: min(100%, 920px);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.28);
+  }
+
+  .resume-canvas {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    background: #fff;
+  }
+
+  .resume-text-layer,
+  .resume-annotation-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .resume-text-layer {
+    z-index: 2;
+    overflow: hidden;
+    line-height: 1;
+    text-align: initial;
+  }
+
+  .resume-text-layer span,
+  .resume-text-layer br {
+    position: absolute;
+    color: transparent;
+    white-space: pre;
+    cursor: text;
+    transform-origin: 0% 0%;
+  }
+
+  .resume-text-layer ::selection {
+    background: rgba(138, 180, 255, 0.35);
+  }
+
+  .resume-annotation-layer {
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  .resume-link-annotation {
+    position: absolute;
+    border-radius: 2px;
+    pointer-events: auto;
+  }
+
+  .resume-link-annotation:focus-visible {
+    outline: 2px solid var(--accent-strong);
+    outline-offset: 2px;
+  }
+
+  .resume-render-status {
+    padding: 2rem;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  .resume-highlights .card p + p {
+    margin-top: 0.85rem;
+  }
+
+  .resume-focus-list {
+    margin-top: 0.9rem;
+  }
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script define:vars={{ resumePdfPath }}>
+  const pdfUrl = resumePdfPath;
+  const renderTarget = document.getElementById('resume-render-target');
+  const downloadResumeButton = document.getElementById('download-resume');
+
+  function getResumeDownloadFilename(date = new Date()) {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+
+    return `Joshua-Bisdorf_Resume_${month}-${day}-${year}.pdf`;
+  }
+
+  function updateResumeDownloadFilename() {
+    if (!downloadResumeButton) return;
+
+    downloadResumeButton.setAttribute('download', getResumeDownloadFilename());
+  }
+
+  updateResumeDownloadFilename();
+  downloadResumeButton?.addEventListener('click', updateResumeDownloadFilename);
+
+  function createLinkAnnotation(annotation, viewport, pdfjsLib) {
+    const url = annotation.url || annotation.unsafeUrl;
+    if (!url || !annotation.rect) return null;
+
+    const rectangle = pdfjsLib.Util.normalizeRect(
+      viewport.convertToViewportRectangle(annotation.rect),
+    );
+
+    const link = document.createElement('a');
+    link.className = 'resume-link-annotation';
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    link.setAttribute('aria-label', `Open ${url}`);
+    link.style.left = `${rectangle[0]}px`;
+    link.style.top = `${rectangle[1]}px`;
+    link.style.width = `${rectangle[2] - rectangle[0]}px`;
+    link.style.height = `${rectangle[3] - rectangle[1]}px`;
+
+    return link;
+  }
+
+  async function renderResume() {
+    if (!renderTarget) return;
+
+    try {
+      const pdfjsLib = window.pdfjsLib;
+
+      if (!pdfjsLib) {
+        throw new Error('PDF.js failed to load');
+      }
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+      renderTarget.innerHTML = '';
+
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        const page = await pdf.getPage(pageNumber);
+        const containerWidth = Math.min(renderTarget.clientWidth || 920, 920);
+        const unscaledViewport = page.getViewport({ scale: 1 });
+        const cssScale = containerWidth / unscaledViewport.width;
+        const viewport = page.getViewport({ scale: cssScale });
+        const outputScale = window.devicePixelRatio || 1;
+
+        const pageElement = document.createElement('div');
+        const canvas = document.createElement('canvas');
+        const textLayer = document.createElement('div');
+        const annotationLayer = document.createElement('div');
+        const context = canvas.getContext('2d');
+
+        pageElement.className = 'resume-page';
+        canvas.className = 'resume-canvas';
+        textLayer.className = 'resume-text-layer textLayer';
+        annotationLayer.className = 'resume-annotation-layer';
+
+        pageElement.style.width = `${Math.floor(viewport.width)}px`;
+        pageElement.style.height = `${Math.floor(viewport.height)}px`;
+        canvas.width = Math.floor(viewport.width * outputScale);
+        canvas.height = Math.floor(viewport.height * outputScale);
+        canvas.style.width = `${Math.floor(viewport.width)}px`;
+        canvas.style.height = `${Math.floor(viewport.height)}px`;
+        textLayer.style.width = `${Math.floor(viewport.width)}px`;
+        textLayer.style.height = `${Math.floor(viewport.height)}px`;
+        annotationLayer.style.width = `${Math.floor(viewport.width)}px`;
+        annotationLayer.style.height = `${Math.floor(viewport.height)}px`;
+
+        pageElement.append(canvas, textLayer, annotationLayer);
+        renderTarget.appendChild(pageElement);
+
+        await page.render({
+          canvasContext: context,
+          viewport,
+          transform: outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : undefined,
+        }).promise;
+
+        const textContent = await page.getTextContent();
+        await pdfjsLib.renderTextLayer({
+          textContent,
+          container: textLayer,
+          viewport,
+          textDivs: [],
+        }).promise;
+
+        const annotations = await page.getAnnotations();
+        annotations
+          .map((annotation) => createLinkAnnotation(annotation, viewport, pdfjsLib))
+          .filter(Boolean)
+          .forEach((link) => annotationLayer.appendChild(link));
+      }
+    } catch (error) {
+      console.error(error);
+      renderTarget.innerHTML =
+        '<p class="resume-render-status">Unable to render the inline resume preview.</p>';
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderResume, { once: true });
+  } else {
+    renderResume();
+  }
+</script>
