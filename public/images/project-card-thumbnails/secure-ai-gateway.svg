@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Secure AI Gateway</title>
+<desc id="desc">A shield surrounding a gateway between a client and an AI model.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#0b1020"/>
+    <stop offset="1" stop-color="#111827"/>
+  </linearGradient>
+  <linearGradient id="shield" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#8ab4ff"/>
+    <stop offset="1" stop-color="#5b7cfa"/>
+  </linearGradient>
+</defs>
+<rect width="1200" height="675" rx="36" fill="url(#bg)"/>
+<g opacity="0.28" stroke="#8ab4ff" stroke-width="3">
+  <path d="M110 338h250"/>
+  <path d="M840 338h250"/>
+  <circle cx="110" cy="338" r="12" fill="#8ab4ff"/>
+  <circle cx="1090" cy="338" r="12" fill="#8ab4ff"/>
+</g>
+<path d="M600 112 788 181v132c0 131-73 218-188 260-115-42-188-129-188-260V181z" fill="url(#shield)" opacity="0.95"/>
+<path d="M600 153 748 207v108c0 101-54 171-148 210-94-39-148-109-148-210V207z" fill="#0f172a"/>
+<rect x="523" y="254" width="154" height="170" rx="24" fill="#172033" stroke="#b8ccff" stroke-width="5"/>
+<path d="M555 254v-38c0-29 20-53 45-53s45 24 45 53v38" fill="none" stroke="#b8ccff" stroke-width="10" stroke-linecap="round"/>
+<circle cx="600" cy="334" r="17" fill="#8ab4ff"/>
+<path d="M600 350v37" stroke="#8ab4ff" stroke-width="10" stroke-linecap="round"/>
+<text x="600" y="625" fill="#dbe7ff" font-family="ui-sans-serif,system-ui,sans-serif" font-size="56" font-weight="700" text-anchor="middle">Secure AI Gateway</text>
+</svg>

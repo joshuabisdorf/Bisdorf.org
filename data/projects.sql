@@ -143,13 +143,13 @@ INSERT INTO project_technologies (project_id, technology, position) VALUES ('bac
 INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('back-to-the-ship', 'Project specification', 'https://eecs281staff.github.io/p1-back-to-the-ship/', 'specification', NULL, 0);
 INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('back-to-the-ship', 'School-restricted GitHub repository', 'https://github.com/joshuabisdorf/EECS-281_Project-1_Back-to-the-ship', 'repository', 'Private coursework repository; access is restricted. Contact me for more details.', 1);
 
-INSERT INTO projects (id, title, organization, classification, course_code, season, summary, detail_slug, detail_path, detail_mode, featured, image_src, image_alt, image_label, image_accent, body_markdown) VALUES ('bisdorf-org', 'Bisdorf.org', 'Personal', 'Portfolio', NULL, 'Summer 2026', 'Personal portfolio website for presenting experience, education, projects, resume, and contact information.', 'portfolio', '/projects/personal/portfolio/bisdorf-org', 'static', 0, NULL, NULL, NULL, NULL, '## Overview
+INSERT INTO projects (id, title, organization, classification, course_code, season, summary, detail_slug, detail_path, detail_mode, featured, image_src, image_alt, image_label, image_accent, body_markdown) VALUES ('bisdorf-org', 'Bisdorf.org', 'Personal', 'Open Source', NULL, 'Summer 2026', 'Personal portfolio website for presenting experience, education, projects, resume, and contact information.', 'open-source', '/projects/personal/open-source/bisdorf-org', 'static', 0, NULL, NULL, NULL, NULL, '## Overview
 
 Personal portfolio website for presenting experience, education, projects, resume, and contact information.
 
 ## Context
 
-This project is listed under Personal — Portfolio.
+This project is listed under Personal — Open Source.
 
 ## Technical focus
 
@@ -983,3 +983,28 @@ INSERT INTO project_technologies (project_id, technology, position) VALUES ('web
 INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('web-security', 'Project specification', 'https://eecs388.org/projects/web.html', 'specification', NULL, 0);
 INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('web-security', 'School-restricted GitHub repository', 'https://github.com/joshuabisdorf/EECS-388_Project-2', 'repository', 'Private coursework repository; access is restricted. Contact me for more details.', 1);
 
+
+
+INSERT INTO projects (id, title, organization, classification, course_code, season, summary, detail_slug, detail_path, detail_mode, featured, image_src, image_alt, image_label, image_accent, body_markdown) VALUES ('secure-ai-gateway', 'Secure AI Gateway', 'Personal', 'Open Source', NULL, 'Summer 2026', 'Security-focused OpenAI-compatible LLM gateway with centralized policy enforcement, distributed controls, observability, and hardened deployment and release verification.', 'open-source', '/projects/personal/open-source/secure-ai-gateway', 'dynamic', 1, '/images/project-card-thumbnails/secure-ai-gateway.svg', 'Secure AI Gateway project thumbnail with shield and gateway motif', 'Secure AI Gateway', '#7aa2f7', '## Overview
+
+Security-focused control plane and OpenAI-compatible proxy for LLM applications.
+
+## Context
+
+This project is listed under Personal — Open Source.
+
+## Technical focus
+
+Primary technologies and concepts include Python, FastAPI, PostgreSQL, Redis, Docker, Kubernetes, Terraform, OpenTelemetry, Prometheus, policy enforcement, and software supply-chain security.');
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Python', 0);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'FastAPI', 1);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'PostgreSQL', 2);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Redis', 3);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Docker', 4);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Kubernetes', 5);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Terraform', 6);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'OpenTelemetry', 7);
+INSERT INTO project_technologies (project_id, technology, position) VALUES ('secure-ai-gateway', 'Prometheus', 8);
+INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'GitHub repository', 'https://github.com/joshuabisdorf/Secure-AI-Gateway', 'repository', NULL, 0);
+INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'v1.0.0 release notes', 'https://github.com/joshuabisdorf/Secure-AI-Gateway/blob/v1.0.0/docs/release-notes-v1.0.0.md', 'resource', NULL, 1);
+INSERT INTO project_resources (project_id, label, href, kind, note, position) VALUES ('secure-ai-gateway', 'Architecture review', 'https://github.com/joshuabisdorf/Secure-AI-Gateway/blob/v1.0.0/docs/architecture.md', 'resource', NULL, 2);
