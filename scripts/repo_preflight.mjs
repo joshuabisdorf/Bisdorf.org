@@ -49,9 +49,7 @@ const SECRET_PATTERNS = [
  * Outputs: Array of tracked paths.
  */
 function trackedFiles() {
-  return execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' })
-    .split('\0')
-    .filter(Boolean);
+  return execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean);
 }
 
 /**

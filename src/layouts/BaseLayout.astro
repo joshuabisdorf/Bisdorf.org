@@ -105,12 +105,12 @@ const websiteSchema = {
         const systemTheme = window.matchMedia('(prefers-color-scheme: light)').matches
           ? 'light'
           : 'dark';
-        const initialTheme = savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : systemTheme;
+        const initialTheme =
+          savedTheme === 'light' || savedTheme === 'dark' ? savedTheme : systemTheme;
 
         applyTheme(initialTheme);
       })();
     </script>
-
     <link rel="canonical" href={canonicalUrl} />
 
     <meta property="og:type" content={ogType} />
@@ -128,9 +128,8 @@ const websiteSchema = {
     <meta name="twitter:image" content={ogImageUrl} />
     <meta name="twitter:image:alt" content={ogImageAlt} />
 
-    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-
+    <script type="application/ld+json" set:html={JSON.stringify(personSchema)}></script>
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)}></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

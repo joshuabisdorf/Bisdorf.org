@@ -42,7 +42,10 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
   <section class="section section--bordered" aria-label="Project list">
     <div class="container">
       <form class="project-controls card" role="search" aria-label="Search and filter projects">
-        <div class="project-controls__row project-controls__row--filters" aria-label="Project filters">
+        <div
+          class="project-controls__row project-controls__row--filters"
+          aria-label="Project filters"
+        >
           <label>
             <span>Organization</span>
             <select id="project-organization">
@@ -56,11 +59,9 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
             <span>Course / Classification</span>
             <select id="project-course">
               <option value="all">All courses / classifications</option>
-              {
-                sortedCourseClassificationOptions.map((option) => (
-                  <option value={option.slug}>{option.label}</option>
-                ))
-              }
+              {sortedCourseClassificationOptions.map((option) => (
+                <option value={option.slug}>{option.label}</option>
+              ))}
             </select>
           </label>
 
@@ -68,12 +69,17 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
             <span>Language</span>
             <select id="project-language">
               <option value="all">All languages</option>
-              {projectLanguageOptions.map((language) => <option value={language}>{language}</option>)}
+              {projectLanguageOptions.map((language) => (
+                <option value={language}>{language}</option>
+              ))}
             </select>
           </label>
         </div>
 
-        <div class="project-controls__row project-controls__row--search" aria-label="Project search and sort">
+        <div
+          class="project-controls__row project-controls__row--search"
+          aria-label="Project search and sort"
+        >
           <label>
             <span>Search</span>
             <div class="project-search-field">
@@ -112,75 +118,75 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
       </p>
 
       <div class="project-list" id="project-list">
-        {
-          sortedProjects.map((project) => {
-            const image = getProjectImage(project);
-            const classificationLabel = project.classification;
-            const classificationCode = project.courseCode ?? project.classification;
-            const classificationValue = project.detail.slug;
-            const organizationLabel = project.organization;
-            const organizationValue = getProjectClassificationSlug(project.organization);
-            const seasonLabel = getProjectSeason(project);
-            const projectMetaItems = [organizationLabel, classificationLabel, seasonLabel].filter(Boolean);
-            const projectLanguages = getProjectLanguages(project.technologies);
-            const searchText = [
-              project.title,
-              project.summary,
-              ...project.technologies,
-              organizationLabel,
-              classificationLabel,
-              classificationCode,
-              seasonLabel,
-              ...projectLanguages,
-            ]
-              .filter(Boolean)
-              .join(' ')
-              .toLowerCase();
+        {sortedProjects.map((project) => {
+          const image = getProjectImage(project);
+          const classificationLabel = project.classification;
+          const classificationCode = project.courseCode ?? project.classification;
+          const classificationValue = project.detail.slug;
+          const organizationLabel = project.organization;
+          const organizationValue = getProjectClassificationSlug(project.organization);
+          const seasonLabel = getProjectSeason(project);
+          const projectMetaItems = [organizationLabel, classificationLabel, seasonLabel].filter(
+            Boolean,
+          );
+          const projectLanguages = getProjectLanguages(project.technologies);
+          const searchText = [
+            project.title,
+            project.summary,
+            ...project.technologies,
+            organizationLabel,
+            classificationLabel,
+            classificationCode,
+            seasonLabel,
+            ...projectLanguages,
+          ]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase();
 
-            return (
-              <a
-                class="project-row project-card-link card"
-                href={project.detail.path}
-                aria-label={`View ${project.title} project`}
-                data-project-card
-                data-title={project.title.toLowerCase()}
-                data-organization={organizationValue}
-                data-course={classificationValue}
-                data-languages={projectLanguages.join('|')}
-                data-term-sort={getSeasonSortValue(project)}
-                data-search={searchText}
+          return (
+            <a
+              class="project-row project-card-link card"
+              href={project.detail.path}
+              aria-label={`View ${project.title} project`}
+              data-project-card
+              data-title={project.title.toLowerCase()}
+              data-organization={organizationValue}
+              data-course={classificationValue}
+              data-languages={projectLanguages.join('|')}
+              data-term-sort={getSeasonSortValue(project)}
+              data-search={searchText}
+            >
+              <div
+                class="project-image"
+                style={`--image-accent: ${image.accent};`}
+                aria-label={image.alt}
               >
-                <div
-                  class="project-image"
-                  style={`--image-accent: ${image.accent};`}
-                  aria-label={image.alt}
-                >
-                  {image.src ? (
-                    <img src={image.src} alt={image.alt} loading="lazy" />
-                  ) : (
-                    <span>{image.label}</span>
-                  )}
-                </div>
-                <div class="project-copy">
-                  <div>
-                    <div class="project-meta" aria-label="Project metadata">
-                      {projectMetaItems.map((item) => (
-                        <span>{item}</span>
-                      ))}
-                    </div>
-                    <h2>{project.title}</h2>
-                  </div>
-                  <div class="pills">
-                    {project.technologies.map((technology) => (
-                      <span class="pill">{technology}</span>
+                {image.src ? (
+                  <img src={image.src} alt={image.alt} loading="lazy" />
+                ) : (
+                  <span>{image.label}</span>
+                )}
+              </div>
+              <div class="project-copy">
+                <div>
+                  <div class="project-meta" aria-label="Project metadata">
+                    {projectMetaItems.map((item) => (
+                      <span>{item}</span>
                     ))}
                   </div>
-                  <p>{project.summary}</p>
+                  <h2>{project.title}</h2>
                 </div>
-              </a>
-            );
-          })
-        }
+                <div class="pills">
+                  {project.technologies.map((technology) => (
+                    <span class="pill">{technology}</span>
+                  ))}
+                </div>
+                <p>{project.summary}</p>
+              </div>
+            </a>
+          );
+        })}
       </div>
 
       <p class="project-empty card" id="project-empty" hidden>
@@ -203,7 +209,9 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
   const empty = document.querySelector('#project-empty');
   const cards = Array.from(document.querySelectorAll('[data-project-card]'));
   const courseOptions = Array.from(courseSelect.options).filter((option) => option.value !== 'all');
-  const languageOptions = Array.from(languageSelect.options).filter((option) => option.value !== 'all');
+  const languageOptions = Array.from(languageSelect.options).filter(
+    (option) => option.value !== 'all',
+  );
 
   controlsForm.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -449,7 +457,9 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
     gap: 1.25rem;
     align-items: stretch;
     padding: 1rem;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition:
+      border-color 0.2s ease,
+      transform 0.2s ease;
   }
 
   .project-row:hover {
@@ -465,7 +475,11 @@ const sortedProjects = [...projects].sort((a, b) => a.title.localeCompare(b.titl
     place-items: center;
     border-radius: 14px;
     background:
-      radial-gradient(circle at 25% 25%, color-mix(in srgb, var(--image-accent) 24%, transparent), transparent 35%),
+      radial-gradient(
+        circle at 25% 25%,
+        color-mix(in srgb, var(--image-accent) 24%, transparent),
+        transparent 35%
+      ),
       linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
     border: 1px solid var(--border);
     color: var(--muted);
