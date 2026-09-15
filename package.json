@@ -13,7 +13,11 @@
     "preview": "astro preview",
     "astro": "astro",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "preflight": "node scripts/repo_preflight.mjs",
+    "preflight:history": "node scripts/repo_preflight.mjs --history",
+    "verify:site": "node scripts/site_integrity.mjs",
+    "check": "npm run format:check && npm run preflight && npm run build && npm run verify:site"
   },
   "keywords": [
     "portfolio",
@@ -22,6 +26,7 @@
     "computer-science"
   ],
   "author": "Joshua Bisdorf",
+  "license": "Apache-2.0",
   "dependencies": {
     "astro": "^7.3.2"
   },

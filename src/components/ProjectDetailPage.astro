@@ -46,13 +46,11 @@ const embeddedVideos = project.embeddedVideos ?? [];
           style={`--image-accent: ${image.accent};`}
           aria-label={image.alt}
         >
-          {
-            image.src ? (
-              <img src={image.src} alt={image.alt} loading="lazy" />
-            ) : (
-              <span>{image.label}</span>
-            )
-          }
+          {image.src ? (
+            <img src={image.src} alt={image.alt} loading="lazy" />
+          ) : (
+            <span>{image.label}</span>
+          )}
         </div>
         <div>
           <h2>Overview</h2>
@@ -76,21 +74,21 @@ const embeddedVideos = project.embeddedVideos ?? [];
               <dt>Season</dt>
               <dd>{seasonLabel}</dd>
             </div>
-            {
-              extraDetails.map((detail) => (
-                <div>
-                  <dt>{detail.label}</dt>
-                  <dd>{detail.value}</dd>
-                </div>
-              ))
-            }
+            {extraDetails.map((detail) => (
+              <div>
+                <dt>{detail.label}</dt>
+                <dd>{detail.value}</dd>
+              </div>
+            ))}
           </dl>
         </section>
 
         <section class="card detail-card">
           <h2>Technologies</h2>
           <div class="pills">
-            {project.technologies.map((technology) => <span class="pill">{technology}</span>)}
+            {project.technologies.map((technology) => (
+              <span class="pill">{technology}</span>
+            ))}
           </div>
         </section>
       </div>
@@ -99,57 +97,53 @@ const embeddedVideos = project.embeddedVideos ?? [];
         <h2>What I Built</h2>
         <p>{whatBuiltText}</p>
         <ul class="highlight-list">
-          {visibleHighlights.map((highlight) => <li>{highlight}</li>)}
+          {visibleHighlights.map((highlight) => (
+            <li>{highlight}</li>
+          ))}
         </ul>
       </section>
 
-      {
-        embeddedVideos.map((video) => (
-          <section class="card detail-card">
-            <h2>{video.title}</h2>
-            <div class="video-embed">
-              <iframe
-                src={video.src}
-                title={video.title}
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen
-                loading="lazy"
-              />
-            </div>
-          </section>
-        ))
-      }
+      {embeddedVideos.map((video) => (
+        <section class="card detail-card">
+          <h2>{video.title}</h2>
+          <div class="video-embed">
+            <iframe
+              src={video.src}
+              title={video.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        </section>
+      ))}
 
-      {
-        extraSections.map((section) => (
-          <section class="card detail-card">
-            <h2>{section.title}</h2>
-            <p>{section.content}</p>
-          </section>
-        ))
-      }
+      {extraSections.map((section) => (
+        <section class="card detail-card">
+          <h2>{section.title}</h2>
+          <p>{section.content}</p>
+        </section>
+      ))}
 
-      {
-        project.resources && project.resources.length > 0 && (
-          <section class="card detail-card">
-            <h2>Resources</h2>
-            <ul class="resource-list">
-              {project.resources.map((resource) => (
-                <li>
-                  {resource.href ? (
-                    <a href={resource.href} target="_blank" rel="noreferrer">
-                      {resource.label}
-                    </a>
-                  ) : (
-                    <span>{resource.label}</span>
-                  )}
-                  {resource.note && <span>{resource.note}</span>}
-                </li>
-              ))}
-            </ul>
-          </section>
-        )
-      }
+      {project.resources && project.resources.length > 0 && (
+        <section class="card detail-card">
+          <h2>Resources</h2>
+          <ul class="resource-list">
+            {project.resources.map((resource) => (
+              <li>
+                {resource.href ? (
+                  <a href={resource.href} target="_blank" rel="noreferrer">
+                    {resource.label}
+                  </a>
+                ) : (
+                  <span>{resource.label}</span>
+                )}
+                {resource.note && <span>{resource.note}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   </section>
 </BaseLayout>

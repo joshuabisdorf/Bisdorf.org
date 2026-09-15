@@ -40,6 +40,9 @@ Live site: https://www.bisdorf.org
 - Node.js
 - npm
 - Dependabot
+- GitHub Actions CI
+- CodeQL and dependency review
+- Repository and generated-site integrity checks
 
 ## Local Development
 
@@ -74,11 +77,25 @@ Preview production build:
 npm run preview
 ```
 
+Run the repository verification gate:
+
+```bash
+npm run check
+```
+
 ## Deployment
 
 The website automatically deploys through Cloudflare Pages from the `main` branch.
 
 Cloudflare-specific static configuration lives in `public/_headers`.
+
+## Repository Policy
+
+Software source code, repository automation, configuration, and maintenance tooling are licensed under Apache-2.0 as described in `LICENSE` and `NOTICE`. Personal and portfolio content remains outside that software license unless separately stated.
+
+Repository security reporting guidance is in `SECURITY.md`. Formatting and maintenance conventions are in `STYLE.md`.
+
+Pull requests are verified with a locked dependency install, formatting check, repository preflight, full-history credential scan, production build, generated-site integrity checks, dependency review, and CodeQL analysis.
 
 ## Project Content Model
 
@@ -259,10 +276,10 @@ For every new project:
 - Add a thumbnail under `public/images/project-card-thumbnails/` or set a custom `image` field
 - Confirm the project appears in `/projects`
 - Confirm filters and sitemap include the project
-- Run `npm run build`
+- Run `npm run check`
 
 ## Roadmap
 
-- Add build CI and branch protection
+- Maintain required build/security checks and protected-branch policy
 - Add more project-specific writeups
 - Continue accessibility and performance improvements
