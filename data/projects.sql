@@ -985,7 +985,7 @@ INSERT INTO project_resources (project_id, label, href, kind, note, position) VA
 
 
 
-INSERT INTO projects (id, title, organization, classification, course_code, season, summary, detail_slug, detail_path, detail_mode, featured, image_src, image_alt, image_label, image_accent, body_markdown) VALUES ('secure-ai-gateway', 'Secure AI Gateway', 'Personal', 'Open Source', NULL, 'Summer 2026', 'Security-focused OpenAI-compatible LLM gateway with centralized policy enforcement, distributed controls, observability, and hardened deployment and release verification.', 'open-source', '/projects/personal/open-source/secure-ai-gateway', 'dynamic', 1, '/images/project-card-thumbnails/secure-ai-gateway.svg', 'Secure AI Gateway project thumbnail with shield and gateway motif', 'Secure AI Gateway', '#7aa2f7', '## Overview
+INSERT INTO projects (id, title, organization, classification, course_code, season, summary, detail_slug, detail_path, detail_mode, featured, image_src, image_alt, image_label, image_accent, body_markdown) VALUES ('secure-ai-gateway', 'Secure AI Gateway', 'Personal', 'Open Source', NULL, 'Summer 2026', 'Security-focused OpenAI-compatible LLM gateway with centralized policy enforcement, distributed controls, observability, and hardened deployment and release verification.', 'open-source', '/projects/personal/open-source/secure-ai-gateway', 'dynamic', 1, '/images/project-card-thumbnails/secure-ai-gateway.webp', 'Secure AI Gateway project thumbnail with shield and gateway motif', 'Secure AI Gateway', '#7aa2f7', '## Overview
 
 Security-focused control plane and OpenAI-compatible proxy for LLM applications.
 
