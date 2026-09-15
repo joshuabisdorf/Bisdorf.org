@@ -277,11 +277,7 @@ html {
       color-mix(in srgb, var(--image-accent, var(--accent)) 44%, transparent),
       transparent 65%
     ),
-    linear-gradient(
-      135deg,
-      var(--placeholder-gradient-start),
-      var(--placeholder-gradient-end)
-    ) !important;
+    linear-gradient(135deg, var(--placeholder-gradient-start), var(--placeholder-gradient-end)) !important;
 }
 
 .project-summary .project-image[aria-hidden='true']::before {
@@ -415,11 +411,7 @@ html {
       color-mix(in srgb, var(--image-accent, var(--accent)) 44%, transparent),
       transparent 65%
     ),
-    linear-gradient(
-      135deg,
-      var(--placeholder-gradient-start),
-      var(--placeholder-gradient-end)
-    ) !important;
+    linear-gradient(135deg, var(--placeholder-gradient-start), var(--placeholder-gradient-end)) !important;
 }
 
 .resume-viewer {

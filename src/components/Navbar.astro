@@ -29,22 +29,20 @@ const links = [
   <div id="navbar-menu-panel" class="navbar__panel" data-open="false">
     <div class="container navbar__inner">
       <nav class="navbar__links" aria-label="Primary navigation">
-        {
-          links.map((link) => {
-            const isActive =
-              link.href === '/' ? currentPath === '/' : currentPath.startsWith(link.href);
+        {links.map((link) => {
+          const isActive =
+            link.href === '/' ? currentPath === '/' : currentPath.startsWith(link.href);
 
-            return (
-              <a
-                href={link.href}
-                class:list={{ active: isActive }}
-                aria-current={isActive ? 'page' : undefined}
-              >
-                {link.label}
-              </a>
-            );
-          })
-        }
+          return (
+            <a
+              href={link.href}
+              class:list={{ active: isActive }}
+              aria-current={isActive ? 'page' : undefined}
+            >
+              {link.label}
+            </a>
+          );
+        })}
       </nav>
 
       <div class="navbar__theme-row">
@@ -179,7 +177,10 @@ const links = [
 
       menuPanel.dataset.open = isOpen ? 'true' : 'false';
       menuToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-      menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+      menuToggle.setAttribute(
+        'aria-label',
+        isOpen ? 'Close navigation menu' : 'Open navigation menu',
+      );
     }
 
     /**

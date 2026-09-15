@@ -1,7 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-export type ProjectResourceKind = 'artifact' | 'repository' | 'specification' | 'website' | 'video' | 'resource';
+export type ProjectResourceKind =
+  'artifact' | 'repository' | 'specification' | 'website' | 'video' | 'resource';
 
 export type ProjectResource = {
   label: string;
@@ -84,7 +85,8 @@ type ProjectDraft = Project & {
 
 const fallbackAccent = '#8ab4ff';
 const restrictedCourseworkRepositoryLabel = 'School-restricted GitHub repository';
-const restrictedCourseworkRepositoryNote = 'Private coursework repository; access is restricted. Contact me for more details.';
+const restrictedCourseworkRepositoryNote =
+  'Private coursework repository; access is restricted. Contact me for more details.';
 const courseRepositoryOwner = 'joshuabisdorf';
 
 const seasonOrder: Record<string, number> = {
@@ -148,15 +150,23 @@ export function getProjectClassificationSlug(
   return project.detail?.slug || slugify(project.classification);
 }
 
-export function getProjectClassificationValue(project: Pick<Project, 'classification' | 'detail'>): string {
+export function getProjectClassificationValue(
+  project: Pick<Project, 'classification' | 'detail'>,
+): string {
   return getProjectClassificationSlug(project);
 }
 
-export function getProjectClassificationLabel(project: Pick<Project, 'courseCode' | 'classification'>): string {
-  return project.courseCode ? `${project.courseCode} — ${project.classification}` : project.classification;
+export function getProjectClassificationLabel(
+  project: Pick<Project, 'courseCode' | 'classification'>,
+): string {
+  return project.courseCode
+    ? `${project.courseCode} — ${project.classification}`
+    : project.classification;
 }
 
-export function getProjectCourseClassificationOptions(projectsToGroup: Project[]): ProjectCourseClassificationOption[] {
+export function getProjectCourseClassificationOptions(
+  projectsToGroup: Project[],
+): ProjectCourseClassificationOption[] {
   const options = new Map<string, ProjectCourseClassificationOption>();
 
   for (const project of projectsToGroup) {
@@ -187,7 +197,8 @@ export function getProjectCourseClassificationOptions(projectsToGroup: Project[]
 }
 
 function loadProjectsFromSql(): Project[] {
-  const sql = readSqlSeed('data/projects.sql', true) + '\n' + readSqlSeed('data/project-details.sql', false);
+  const sql =
+    readSqlSeed('data/projects.sql', true) + '\n' + readSqlSeed('data/project-details.sql', false);
   const drafts = new Map<string, ProjectDraft>();
 
   for (const values of matchInsertValues(sql, 'projects')) {
@@ -394,7 +405,10 @@ function normalizeProjectResource(project: ProjectDraft, resource: ResourceRow):
   };
 }
 
-function isRestrictedCourseworkRepository(project: Pick<Project, 'organization' | 'courseCode'>, resource: ProjectResource): boolean {
+function isRestrictedCourseworkRepository(
+  project: Pick<Project, 'organization' | 'courseCode'>,
+  resource: ProjectResource,
+): boolean {
   return (
     project.organization === 'University of Michigan' &&
     Boolean(project.courseCode?.startsWith('EECS')) &&
@@ -404,7 +418,10 @@ function isRestrictedCourseworkRepository(project: Pick<Project, 'organization' 
 }
 
 function readSqlSeed(relativeFilePath: string, required: boolean): string {
-  const candidatePaths = [path.join(process.cwd(), relativeFilePath), path.resolve(relativeFilePath)];
+  const candidatePaths = [
+    path.join(process.cwd(), relativeFilePath),
+    path.resolve(relativeFilePath),
+  ];
   const sqlPath = candidatePaths.find((candidatePath) => fs.existsSync(candidatePath));
 
   if (!sqlPath) {
