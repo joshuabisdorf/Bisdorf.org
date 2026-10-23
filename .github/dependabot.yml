@@ -1,25 +1,44 @@
 version: 2
 updates:
+  # Check routine npm version updates monthly. Security updates are independent.
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '09:00'
-    open-pull-requests-limit: 5
+      timezone: America/New_York
+    open-pull-requests-limit: 3
+    cooldown:
+      default-days: 3
+      semver-patch-days: 21
     groups:
-      npm-dependencies:
+      npm-routine:
+        applies-to: version-updates
         patterns:
           - '*'
+        update-types:
+          - minor
+          - patch
+    # Major version updates remain separate PRs.
 
+  # Keep routine GitHub Actions updates monthly, with CodeQL updates grouped.
   - package-ecosystem: github-actions
     directory: /
     schedule:
-      interval: weekly
-      day: monday
+      interval: monthly
       time: '09:00'
-    open-pull-requests-limit: 5
+      timezone: America/New_York
+    open-pull-requests-limit: 3
     groups:
       codeql-action:
+        applies-to: version-updates
         patterns:
           - 'github/codeql-action/*'
+      actions-routine:
+        applies-to: version-updates
+        patterns:
+          - '*'
+        update-types:
+          - minor
+          - patch
+    # Other major action updates remain separate PRs.
