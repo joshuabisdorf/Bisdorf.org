@@ -1,285 +1,170 @@
 # Bisdorf.org
 
-Personal portfolio website for Joshua Bisdorf.
+Source for the personal portfolio at https://www.bisdorf.org.
 
-Built to showcase professional experience, projects, technical artifacts, and interests in software engineering, machine learning, computer vision, networking, security, systems, and extended reality.
+The site presents software engineering projects, professional experience, a resume, and selected
+public artifacts. It is built as a static Astro website and deployed through Cloudflare Pages.
 
-Live site: https://www.bisdorf.org
+## Technology and deployment
 
-## Features
+- **Frontend:** Astro 7, TypeScript, HTML, CSS, and browser JavaScript.
+- **Content:** SQL seed files read at build time, with no production database service.
+- **Hosting:** Cloudflare Pages, deployed from the **main** branch; Cloudflare DNS.
+- **Automation:** npm, Prettier, GitHub Actions, Dependabot, CodeQL, and dependency review.
 
-- Responsive portfolio website
-- Project index with search, sorting, organization, course/classification, and language filters
-- Dedicated project pages for coursework, research, and personal projects
-- Public project artifacts for selected reports and presentations
-- Inline PDF resume rendering with selectable text and clickable links
-- Direct resume download
-- Contact page with professional links
-- Generated sitemap endpoint
-- Search indexing support via `robots.txt`
-- Social preview metadata
-- Cloudflare Pages deployment
+The project index supports search, sorting, and filters for organization, classification, and
+programming language. Every project uses a shared detail-page template and its own canonical URL.
 
-## Tech Stack
+## Requirements and local development
 
-### Frontend
-
-- Astro
-- TypeScript
-- HTML / CSS
-- Vanilla browser JavaScript for project filtering
-
-### Infrastructure & Deployment
-
-- Cloudflare Pages
-- Cloudflare DNS
-- GitHub
-
-### Tooling
-
-- Node.js
-- npm
-- Dependabot
-- GitHub Actions CI
-- CodeQL and dependency review
-- Repository and generated-site integrity checks
-
-## Local Development
-
-Clone the repository:
+Use Node.js **22.22.0 or newer** (see **.nvmrc**) and npm.
 
 ```bash
 git clone https://github.com/joshuabisdorf/Bisdorf.org.git
 cd Bisdorf.org
-```
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-Run locally:
-
-```bash
+npm ci
 npm run dev
 ```
 
-Build for production:
+The development server starts locally. For a production build and preview:
 
 ```bash
 npm run build
-```
-
-Preview production build:
-
-```bash
 npm run preview
 ```
 
-Run the repository verification gate:
+To run the same source-formatting, hygiene, build, and generated-site checks used by CI:
 
 ```bash
 npm run check
 ```
 
-## Deployment
+For full-history credential scanning, run **npm run preflight:history**. CI runs that scan in
+addition to the normal check suite.
 
-The website automatically deploys through Cloudflare Pages from the `main` branch.
+## Project content model
 
-Cloudflare-specific static configuration lives in `public/_headers`.
+**The SQL seed files are the source of truth for all project metadata and detail pages.**
+Astro loads them at build time using **src/data/projects.ts**:
 
-## Repository Policy
+| File                                       | Purpose                                                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| **data/projects.sql**                      | Project identity, summaries, routes, images, technologies, and resource links            |
+| **data/project-details.sql**               | Overviews, implementation notes, highlights, additional details, sections, and videos    |
+| **src/data/projects.ts**                   | SQL seed reader, typed project model, resource normalization, and sorting/filter helpers |
+| **src/pages/projects/[...slug].astro**     | Generates each project URL from the SQL-backed project list                              |
+| **src/components/ProjectDetailPage.astro** | Renders the shared project details, highlights, media, and resources                     |
+| **src/pages/projects.astro**               | Renders the searchable, filterable project index                                         |
+| **src/pages/sitemap.xml.ts**               | Generates the sitemap using the same SQL-backed project routes                           |
 
-Software source code, repository automation, configuration, and maintenance tooling are licensed under Apache-2.0 as described in `LICENSE` and `NOTICE`. Personal and portfolio content remains outside that software license unless separately stated.
+There is **no Markdown project content collection** and no separate SQL database to initialize.
+The empty **src/content.config.ts** does not supply project metadata. A legacy
+**body_markdown** column remains in the project seed but is not rendered by the current
+project-detail template.
 
-Repository security reporting guidance is in `SECURITY.md`. Formatting and maintenance conventions are in `STYLE.md`.
+The seed currently uses the following tables:
 
-Pull requests are verified with a locked dependency install, formatting check, repository preflight, full-history credential scan, production build, generated-site integrity checks, dependency review, and CodeQL analysis.
+- **projects:** core project metadata, classification, route, image and featured flag.
+- **project_technologies:** ordered technology labels.
+- **project_resources:** ordered links to repositories, releases, sites, and artifacts.
+- **project_page_copy:** overview and “What I Built” copy.
+- **project_highlights:** ordered implementation highlights.
+- **project_extra_details:** labeled facts such as the latest release.
+- **project_extra_sections:** longer titled sections for project details.
+- **project_embedded_videos:** embedded video metadata.
 
-## Project Content Model
+The TypeScript seed reader parses the repository's simple SQL INSERT conventions. Preserve the
+column order, numeric positions, and single-quoted string syntax already in use. Escape SQL
+apostrophes as doubled single quotes.
 
-Project metadata and project page markdown live in the Astro content collection:
+See [the SQL data guide](data/README.md) for the update process.
 
-```text
-src/content/projects/
-```
+### Adding or changing a project
 
-The content schema is defined in:
+1. Add or edit the project in **data/projects.sql**, including its ID, summary, route, image
+   metadata, technologies, and resources.
+2. Add or edit its detail copy and ordered highlights in **data/project-details.sql**.
+3. Add an image to **public/images/project-card-thumbnails/<project-id>.webp**, or set an
+   explicit custom image path and alt text in the metadata.
+4. Place distributable reports and presentations in **public/project-artifacts/** when
+   applicable. Internal project links must point to files included in the static build.
+5. Run **npm run check** and confirm the card, detail route, resource links, filters, and
+   generated sitemap. The build and integrity checks validate generated site paths.
 
-```text
-src/content.config.ts
-```
+All project routes are generated by the shared Astro page; you do not need a separate page
+file for each project.
 
-Project helper utilities live in:
+### Secure AI Gateway portfolio entry
 
-```text
-src/data/projects.ts
-```
+The [Secure AI Gateway project page](https://www.bisdorf.org/projects/personal/open-source/secure-ai-gateway)
+documents the separately maintained security gateway. Its project text and release links live
+in **data/projects.sql** and **data/project-details.sql**, not in this site's README.
 
-Each project entry contains frontmatter shaped like:
+The current stable gateway release is
+[Secure AI Gateway v1.0.1](https://github.com/joshuabisdorf/Secure-AI-Gateway/releases/tag/v1.0.1).
+Use the upstream release and version-tagged architecture documents for release-specific claims;
+keep earlier releases available as historical resources.
 
-```ts
-{
-  id: string;
-  title: string;
-  summary: string;
-  technologies: string[];
-  kind: 'coursework' | 'personal' | 'research';
-  classification?: string;
-  term?: string;
-  course?: {
-    code: string;
-    title: string;
-    slug: string;
-    term: string;
-    institution: 'University of Michigan';
-  };
-  detail: {
-    path: string;
-    mode: 'static' | 'dynamic';
-  };
-  resources?: ProjectResource[];
-  image?: ProjectImage;
-  featured?: boolean;
-}
-```
+## Public files and images
 
-Use `classification` for non-course groupings such as `Portfolio`. Use `term` for standalone projects when a course term is not available.
+- **public/images/project-card-thumbnails/** contains project card images and its manifest.
+- **public/project-artifacts/** contains publicly distributable reports and presentations.
+- **public/resume.pdf** is the downloadable and inline-viewed resume.
+- **public/og-image.png** and **public/favicon.svg** provide social previews and branding.
+- **public/robots.txt** advertises the generated sitemap.
 
-Use `detail.mode: 'static'` for hand-written project pages and `detail.mode: 'dynamic'` for pages generated by the shared route:
+The default card image is
+**/images/project-card-thumbnails/<project-id>.webp**. Project-specific metadata may
+override its path and alt text. See
+[the thumbnail guide](public/images/project-card-thumbnails/README.md).
 
-```text
-src/pages/projects/[...slug].astro
-```
+## Routing, metadata, and site security
 
-## Project Images
+- **src/layouts/BaseLayout.astro** owns shared metadata, layouts, and initial theme selection.
+- **src/components/Navbar.astro** manages navigation and persisted light/dark theme choice.
+- **src/pages/sitemap.xml.ts** generates canonical sitemap URLs from base and project routes.
+- **public/\_headers** defines Cloudflare Pages response security headers, including Content
+  Security Policy, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and
+  X-Frame-Options.
 
-Project card thumbnails live in:
+When adding an external embed, update Content Security Policy intentionally and rerun checks.
+The site does not require paid hosting integrations for local development.
 
-```text
-public/images/project-card-thumbnails/
-```
+## Repository verification
 
-By default, a project uses this thumbnail path:
+| Command                       | Purpose                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------- |
+| **npm ci**                    | Install locked dependencies                                                           |
+| **npm run format:check**      | Check supported files with Prettier                                                   |
+| **npm run preflight**         | Check tracked-file hygiene, security headers, and high-confidence credential patterns |
+| **npm run preflight:history** | Scan Git history for high-confidence credential patterns                              |
+| **npm run build**             | Build the static Astro site                                                           |
+| **npm run verify:site**       | Validate generated pages, assets, sitemap URLs, and local references                  |
+| **npm run check**             | Run formatting, preflight, build, and site integrity checks                           |
 
-```text
-public/images/project-card-thumbnails/<project-id>.webp
-```
+CI also runs CodeQL and dependency review. Changes merged into **main** are deployed via
+Cloudflare Pages.
 
-When a project needs a custom image path or alt text, set the optional `image` field in the project frontmatter:
-
-```ts
-image: {
-  src: '/project-images/example-project/cover.webp',
-  alt: 'Short description of the project image',
-}
-```
-
-Recommended custom image storage:
-
-```text
-public/project-images/<project-id>/cover.webp
-```
-
-## Project Artifacts
-
-Public project reports and presentations live in:
-
-```text
-public/project-artifacts/
-```
-
-Recommended convention:
-
-```text
-public/project-artifacts/<course>/<project-id>/<artifact-name>.pdf
-```
-
-PDF links should open in a new tab and should not force browser downloads.
-
-## Sitemap
-
-The sitemap is generated from route data in:
+## Source layout
 
 ```text
-src/data/site-map.ts
-src/pages/sitemap.xml.ts
+.github/workflows/     build, static analysis, and dependency review
+data/                  SQL seed content and update instructions
+public/                static images, PDF artifacts, resume, and headers
+scripts/               repository preflight and built-site integrity checks
+src/components/        navigation, footer, and shared project-page template
+src/data/              SQL-backed project loader and helper utilities
+src/layouts/           shared page layout and metadata
+src/pages/             static routes, project index, project detail route, sitemap
+src/styles/            global and page-level presentation
 ```
 
-Do not manually edit `public/sitemap.xml`; the static file has been replaced by the generated route.
+## Security, contributions, and licensing
 
-## Security Headers
+Follow [STYLE.md](STYLE.md) for formatting and JSDoc conventions and [SECURITY.md](SECURITY.md)
+for vulnerability reporting. Use pull requests and let CI verify changes before merging.
 
-Cloudflare Pages reads deployment headers from:
-
-```text
-public/_headers
-```
-
-Current headers include:
-
-- `Content-Security-Policy`
-- `X-Content-Type-Options`
-- `Referrer-Policy`
-- `Permissions-Policy`
-- `X-Frame-Options`
-
-When embedding a new third-party service, update the Content Security Policy before deployment.
-
-## Dependabot
-
-Dependabot is configured in:
-
-```text
-.github/dependabot.yml
-```
-
-It checks npm dependencies and GitHub Actions weekly.
-
-## Project Structure
-
-```text
-src/
-├── components/
-├── content/
-│   └── projects/
-├── data/
-│   ├── projects.ts
-│   └── site-map.ts
-├── layouts/
-├── pages/
-│   ├── projects.astro
-│   ├── projects/
-│   └── sitemap.xml.ts
-└── styles/
-
-public/
-├── _headers
-├── favicon.svg
-├── images/
-│   └── project-card-thumbnails/
-├── og-image.png
-├── project-artifacts/
-├── resume.pdf
-└── robots.txt
-```
-
-## Maintenance Checklist
-
-For every new project:
-
-- Add one Markdown entry under `src/content/projects/`
-- Set organization-related metadata with either `course` or `classification`
-- Add or generate a project detail page when the shared dynamic route is not sufficient
-- Add public artifacts under `public/project-artifacts/` when available
-- Add a thumbnail under `public/images/project-card-thumbnails/` or set a custom `image` field
-- Confirm the project appears in `/projects`
-- Confirm filters and sitemap include the project
-- Run `npm run check`
-
-## Roadmap
-
-- Maintain required build/security checks and protected-branch policy
-- Add more project-specific writeups
-- Continue accessibility and performance improvements
+Software source and configuration are licensed under
+[Apache License 2.0](LICENSE) with attribution in [NOTICE](NOTICE). Personal/portfolio copy,
+images, and other creative artifacts are not automatically licensed as software; follow the
+repository's licensing notice for those materials.

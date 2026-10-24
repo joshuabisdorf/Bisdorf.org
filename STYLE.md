@@ -1,43 +1,55 @@
 # Repository Style Standard
 
-This repository uses a project-owned style policy. It does not adopt an external
-style guide as the repository's governing policy.
-
-## Formatting
-
-- Prettier is the authoritative formatter for supported source files.
-- The configured print width is 100 characters.
-- UTF-8, LF line endings, final newlines, and spaces instead of tabs are the
-  repository defaults.
-- Generated files and binary portfolio artifacts are not manually reformatted.
+Prettier is the formatter for the Astro, TypeScript, JavaScript, JSON, and Markdown source
+files it supports. Follow the established print width of 100 characters, UTF-8, LF line
+endings, final newlines, and spaces instead of tabs.
 
 ## Astro, JavaScript, and TypeScript
 
-- Prefer small modules with explicit data flow and descriptive names.
-- Avoid hidden global state and unnecessary side effects.
-- Keep browser-only behavior scoped to the component or page that owns it.
-- Treat user-controlled URL, DOM, and storage values as untrusted input.
-- Do not suppress type or build errors merely to satisfy CI.
+- Keep modules focused, with explicit data flow and descriptive names.
+- Use TypeScript annotations for typed project data and component interfaces.
+- Document non-trivial functions and boundary conditions using **JSDoc**, the conventional
+  documentation syntax for JavaScript and TypeScript.
+- Prefer brief summaries; use **@param**, **@returns**, or **@throws** when they explain
+  meaningful behavior. Avoid repeating obvious types already expressed in TypeScript.
+- Use ordinary JSDoc paragraphs to document non-obvious side effects, environment
+  expectations, accessibility behavior, storage failures, and security boundaries.
+- Do not preserve legacy RMEIO field lists in new documentation.
+- Treat user-controlled DOM, URL, and storage values as untrusted input.
+- Do not suppress build or type errors merely to satisfy CI.
 
-## RMEIO contracts
+Example:
 
-Non-trivial maintenance scripts and security-sensitive helper functions should
-use concise contracts when the behavior is not obvious:
+```js
+/**
+ * Resolve whether a site-local URL exists in the generated output.
+ *
+ * @param {string} urlPath - Absolute site-local URL path.
+ * @returns {boolean} Whether the generated file or index page exists.
+ */
+function resolves(urlPath) {
+  // Implementation.
+}
+```
 
-- Requires
-- Modifies
-- Effects
-- Inputs
-- Outputs
+Pure helpers with obvious behavior may use a one-sentence comment or no comment. When a
+function operates on browser storage, DOM attributes, Git history, or filesystem content,
+explain the behavior that a caller cannot infer from its name.
 
-Simple markup, obvious callbacks, and declarative configuration do not need
-ceremonial contracts.
+## Project data and documentation
+
+- Treat **data/projects.sql** and **data/project-details.sql** as authoritative for the
+  portfolio's project content. See [data/README.md](data/README.md).
+- Keep displayed release metadata and versioned resource links aligned with a verified
+  published release; preserve older links only when labeled as historical.
+- Use descriptive thumbnail alt text and verified internal artifact paths.
+- Keep **README.md** aligned with the SQL-backed project loader and generated routes.
 
 ## Repository policy
 
-- `npm ci` is the reproducible installation path used by CI.
-- `npm run check` is the local repository gate.
-- GitHub Actions must be pinned to immutable commit SHAs.
-- New automation should use the minimum practical permissions.
-- Site content and design changes should not be mixed into repository-hardening
-  work unless the change is required to fix a verified defect.
+- **npm ci** is the reproducible install path used by CI.
+- **npm run check** is the local source and generated-site verification gate.
+- GitHub Actions dependencies must be pinned to immutable commit SHAs.
+- New automation must use minimum practical permissions.
+- Do not combine visual redesigns with code-style or documentation maintenance unless
+  required to correct a verified defect.

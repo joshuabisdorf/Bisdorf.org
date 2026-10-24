@@ -97,24 +97,11 @@ const links = [
     const navLinks = document.querySelectorAll('.navbar__links a');
 
     /**
-     * RME
-     * Requires:
-     * - theme is "light" or "dark".
-     * - The theme switch input exists.
+     * Apply the chosen theme and persist it when browser storage is available.
      *
-     * Modifies:
-     * - document.documentElement.dataset.theme.
-     * - The theme switch checked state.
-     * - The theme-color meta tag content.
-     *
-     * Effects:
-     * - Persists the selected theme when storage is available.
-     *
-     * Inputs:
-     * - theme: Theme to activate.
-     *
-     * Outputs:
-     * - None.
+     * Updates the document theme, theme-color metadata, and switch state.
+     * If storage is unavailable, the visual theme still changes.
+     * @param {'light' | 'dark'} theme - Theme to activate.
      */
     function setTheme(theme) {
       if (!(themeToggle instanceof HTMLInputElement)) return;
@@ -133,21 +120,7 @@ const links = [
     }
 
     /**
-     * RME
-     * Requires:
-     * - The theme switch input exists.
-     *
-     * Modifies:
-     * - The active site theme through setTheme.
-     *
-     * Effects:
-     * - Responds to a user changing the theme switch.
-     *
-     * Inputs:
-     * - None.
-     *
-     * Outputs:
-     * - None.
+     * Apply the new theme selected by the accessible theme switch.
      */
     function handleThemeChange() {
       if (!(themeToggle instanceof HTMLInputElement)) return;
@@ -155,22 +128,10 @@ const links = [
     }
 
     /**
-     * RME
-     * Requires:
-     * - The mobile menu button and menu panel exist.
+     * Set the mobile menu's visibility and accessibility attributes.
      *
-     * Modifies:
-     * - The menu panel data-open state.
-     * - The menu button aria-expanded and aria-label attributes.
-     *
-     * Effects:
-     * - Opens or closes the mobile navigation dropdown.
-     *
-     * Inputs:
-     * - isOpen: Whether the mobile menu should be open.
-     *
-     * Outputs:
-     * - None.
+     * Requires the navigation toggle and panel to exist.
+     * @param {boolean} isOpen - Whether the mobile menu is open.
      */
     function setMenuOpen(isOpen) {
       if (!(menuToggle instanceof HTMLButtonElement) || !(menuPanel instanceof HTMLElement)) return;
@@ -184,21 +145,7 @@ const links = [
     }
 
     /**
-     * RME
-     * Requires:
-     * - The mobile menu button and menu panel exist.
-     *
-     * Modifies:
-     * - The mobile menu open state through setMenuOpen.
-     *
-     * Effects:
-     * - Toggles the mobile navigation dropdown after a user presses the hamburger button.
-     *
-     * Inputs:
-     * - None.
-     *
-     * Outputs:
-     * - None.
+     * Toggle the mobile navigation menu in response to the menu button.
      */
     function handleMenuToggle() {
       if (!(menuPanel instanceof HTMLElement)) return;
@@ -206,22 +153,9 @@ const links = [
     }
 
     /**
-     * RME
-     * Requires:
-     * - The mobile menu button and menu panel exist.
+     * Close the mobile menu on Escape and restore keyboard focus.
      *
-     * Modifies:
-     * - The mobile menu open state.
-     * - Keyboard focus when Escape closes the menu.
-     *
-     * Effects:
-     * - Closes the mobile menu when Escape is pressed.
-     *
-     * Inputs:
-     * - event: Keyboard event from the document.
-     *
-     * Outputs:
-     * - None.
+     * @param {KeyboardEvent} event - Document-level keyboard event.
      */
     function handleMenuKeydown(event) {
       if (
@@ -237,21 +171,7 @@ const links = [
     }
 
     /**
-     * RME
-     * Requires:
-     * - The mobile menu exists.
-     *
-     * Modifies:
-     * - The mobile menu open state.
-     *
-     * Effects:
-     * - Closes the menu after a navigation destination is selected.
-     *
-     * Inputs:
-     * - None.
-     *
-     * Outputs:
-     * - None.
+     * Close the mobile menu after selecting a navigation destination.
      */
     function handleNavLinkClick() {
       setMenuOpen(false);
