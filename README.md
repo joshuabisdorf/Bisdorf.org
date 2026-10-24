@@ -19,25 +19,25 @@ programming language. Every project uses a shared detail-page template and its o
 
 Use Node.js **22.22.0 or newer** (see **.nvmrc**) and npm.
 
-~~~bash
+```bash
 git clone https://github.com/joshuabisdorf/Bisdorf.org.git
 cd Bisdorf.org
 npm ci
 npm run dev
-~~~
+```
 
 The development server starts locally. For a production build and preview:
 
-~~~bash
+```bash
 npm run build
 npm run preview
-~~~
+```
 
 To run the same source-formatting, hygiene, build, and generated-site checks used by CI:
 
-~~~bash
+```bash
 npm run check
-~~~
+```
 
 For full-history credential scanning, run **npm run preflight:history**. CI runs that scan in
 addition to the normal check suite.
@@ -47,15 +47,15 @@ addition to the normal check suite.
 **The SQL seed files are the source of truth for all project metadata and detail pages.**
 Astro loads them at build time using **src/data/projects.ts**:
 
-| File | Purpose |
-| --- | --- |
-| **data/projects.sql** | Project identity, summaries, routes, images, technologies, and resource links |
-| **data/project-details.sql** | Overviews, implementation notes, highlights, additional details, sections, and videos |
-| **src/data/projects.ts** | SQL seed reader, typed project model, resource normalization, and sorting/filter helpers |
-| **src/pages/projects/[...slug].astro** | Generates each project URL from the SQL-backed project list |
-| **src/components/ProjectDetailPage.astro** | Renders the shared project details, highlights, media, and resources |
-| **src/pages/projects.astro** | Renders the searchable, filterable project index |
-| **src/pages/sitemap.xml.ts** | Generates the sitemap using the same SQL-backed project routes |
+| File                                       | Purpose                                                                                  |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| **data/projects.sql**                      | Project identity, summaries, routes, images, technologies, and resource links            |
+| **data/project-details.sql**               | Overviews, implementation notes, highlights, additional details, sections, and videos    |
+| **src/data/projects.ts**                   | SQL seed reader, typed project model, resource normalization, and sorting/filter helpers |
+| **src/pages/projects/[...slug].astro**     | Generates each project URL from the SQL-backed project list                              |
+| **src/components/ProjectDetailPage.astro** | Renders the shared project details, highlights, media, and resources                     |
+| **src/pages/projects.astro**               | Renders the searchable, filterable project index                                         |
+| **src/pages/sitemap.xml.ts**               | Generates the sitemap using the same SQL-backed project routes                           |
 
 There is **no Markdown project content collection** and no separate SQL database to initialize.
 The empty **src/content.config.ts** does not supply project metadata. A legacy
@@ -123,7 +123,7 @@ override its path and alt text. See
 - **src/layouts/BaseLayout.astro** owns shared metadata, layouts, and initial theme selection.
 - **src/components/Navbar.astro** manages navigation and persisted light/dark theme choice.
 - **src/pages/sitemap.xml.ts** generates canonical sitemap URLs from base and project routes.
-- **public/_headers** defines Cloudflare Pages response security headers, including Content
+- **public/\_headers** defines Cloudflare Pages response security headers, including Content
   Security Policy, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, and
   X-Frame-Options.
 
@@ -132,22 +132,22 @@ The site does not require paid hosting integrations for local development.
 
 ## Repository verification
 
-| Command | Purpose |
-| --- | --- |
-| **npm ci** | Install locked dependencies |
-| **npm run format:check** | Check supported files with Prettier |
-| **npm run preflight** | Check tracked-file hygiene, security headers, and high-confidence credential patterns |
-| **npm run preflight:history** | Scan Git history for high-confidence credential patterns |
-| **npm run build** | Build the static Astro site |
-| **npm run verify:site** | Validate generated pages, assets, sitemap URLs, and local references |
-| **npm run check** | Run formatting, preflight, build, and site integrity checks |
+| Command                       | Purpose                                                                               |
+| ----------------------------- | ------------------------------------------------------------------------------------- |
+| **npm ci**                    | Install locked dependencies                                                           |
+| **npm run format:check**      | Check supported files with Prettier                                                   |
+| **npm run preflight**         | Check tracked-file hygiene, security headers, and high-confidence credential patterns |
+| **npm run preflight:history** | Scan Git history for high-confidence credential patterns                              |
+| **npm run build**             | Build the static Astro site                                                           |
+| **npm run verify:site**       | Validate generated pages, assets, sitemap URLs, and local references                  |
+| **npm run check**             | Run formatting, preflight, build, and site integrity checks                           |
 
 CI also runs CodeQL and dependency review. Changes merged into **main** are deployed via
 Cloudflare Pages.
 
 ## Source layout
 
-~~~text
+```text
 .github/workflows/     build, static analysis, and dependency review
 data/                  SQL seed content and update instructions
 public/                static images, PDF artifacts, resume, and headers
@@ -157,7 +157,7 @@ src/data/              SQL-backed project loader and helper utilities
 src/layouts/           shared page layout and metadata
 src/pages/             static routes, project index, project detail route, sitemap
 src/styles/            global and page-level presentation
-~~~
+```
 
 ## Security, contributions, and licensing
 

@@ -20,7 +20,7 @@ endings, final newlines, and spaces instead of tabs.
 
 Example:
 
-~~~js
+```js
 /**
  * Resolve whether a site-local URL exists in the generated output.
  *
@@ -30,7 +30,7 @@ Example:
 function resolves(urlPath) {
   // Implementation.
 }
-~~~
+```
 
 Pure helpers with obvious behavior may use a one-sentence comment or no comment. When a
 function operates on browser storage, DOM attributes, Git history, or filesystem content,

@@ -3,9 +3,9 @@
 Bisdorf.org generates its project index, project detail pages, and sitemap from SQL seed files
 loaded during the Astro build. This is a **build-time content source**, not a live SQL server.
 
-| File | Tables and content |
-| --- | --- |
-| **data/projects.sql** | projects, project_technologies, project_resources |
+| File                         | Tables and content                                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **data/projects.sql**        | projects, project_technologies, project_resources                                                             |
 | **data/project-details.sql** | project_page_copy, project_highlights, project_extra_details, project_extra_sections, project_embedded_videos |
 
 **src/data/projects.ts** reads the two seeds into typed project objects and sorts resources,
@@ -29,10 +29,10 @@ The project index and sitemap use the same loaded project collection.
 
 After editing, run:
 
-~~~bash
+```bash
 npm ci
 npm run check
-~~~
+```
 
 Confirm the project appears in **/projects**, that the shared project route builds and renders,
 and that every site-local artifact link resolves. The site-integrity script validates generated
