@@ -17,13 +17,10 @@ const REQUIRED_OUTPUTS = [
 ];
 
 /**
- * Recursively list regular files below a directory.
+ * Recursively collect regular files from a readable directory.
  *
- * Requires: directory exists and is readable.
- * Modifies: Nothing.
- * Effects: Reads directory metadata.
- * Inputs: Directory path.
- * Outputs: Array of regular file paths.
+ * @param {string} directory - Directory to scan.
+ * @returns {string[]} Paths to the discovered files.
  */
 function walk(directory) {
   const files = [];
@@ -36,13 +33,10 @@ function walk(directory) {
 }
 
 /**
- * Determine whether a built-site URL resolves to a generated file.
+ * Check whether a site-local URL has a generated output file.
  *
- * Requires: urlPath is an absolute site-local path.
- * Modifies: Nothing.
- * Effects: Reads filesystem metadata.
- * Inputs: Site-local URL path.
- * Outputs: True when a matching generated file exists.
+ * @param {string} urlPath - Absolute URL path within the site.
+ * @returns {boolean} Whether a file or index page exists in dist.
  */
 function resolves(urlPath) {
   const decoded = decodeURIComponent(urlPath.split(/[?#]/, 1)[0]);
@@ -59,13 +53,10 @@ function resolves(urlPath) {
 }
 
 /**
- * Validate generated pages, static assets, internal links, and sitemap routes.
+ * Verify generated pages, internal references, and sitemap routes.
  *
- * Requires: `npm run build` completed successfully.
- * Modifies: Nothing in the generated site.
- * Effects: Reads files under dist and exits nonzero on broken references.
- * Inputs: Generated Astro output.
- * Outputs: A concise integrity pass/fail report.
+ * Reads the completed build in dist and exits with a nonzero status when
+ * required output or internal references are missing.
  */
 function main() {
   const errors = [];

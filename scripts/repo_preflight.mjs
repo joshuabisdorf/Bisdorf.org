@@ -40,39 +40,31 @@ const SECRET_PATTERNS = [
 ];
 
 /**
- * Return tracked repository paths.
+ * List tracked repository paths using Git.
  *
- * Requires: Git is available and the current directory is a repository.
- * Modifies: Nothing.
- * Effects: Executes a read-only Git command.
- * Inputs: None.
- * Outputs: Array of tracked paths.
+ * Requires Git and a readable working tree; invokes a read-only Git command.
+ * @returns {string[]} Repository-relative paths of tracked files.
  */
 function trackedFiles() {
   return execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8' }).split('\0').filter(Boolean);
 }
 
 /**
- * Report one failed preflight condition.
+ * Record a failed repository preflight condition.
  *
- * Requires: message describes a repository problem.
- * Modifies: The errors array.
- * Effects: None outside process memory.
- * Inputs: Error message and mutable error list.
- * Outputs: None.
+ * @param {string} message - Description of the violation.
+ * @param {string[]} errors - Mutable list of violations.
  */
 function fail(message, errors) {
   errors.push(message);
 }
 
 /**
- * Scan current tracked text for high-confidence credential patterns.
+ * Inspect tracked text files for high-confidence credential patterns.
  *
- * Requires: files contains tracked repository-relative paths.
- * Modifies: The errors array.
- * Effects: Reads regular text files from the working tree.
- * Inputs: Tracked files and mutable error list.
- * Outputs: None.
+ * Skips known binary extensions and oversized files; appends findings to errors.
+ * @param {string[]} files - Tracked paths to inspect.
+ * @param {string[]} errors - Mutable list of violations.
  */
 function scanCurrentSecrets(files, errors) {
   for (const file of files) {
@@ -90,13 +82,10 @@ function scanCurrentSecrets(files, errors) {
 }
 
 /**
- * Scan textual Git history for high-confidence credential patterns.
+ * Inspect the Git patch history for high-confidence credential patterns.
  *
- * Requires: The repository has readable Git history.
- * Modifies: The errors array.
- * Effects: Executes a read-only full-history Git log.
- * Inputs: Mutable error list.
- * Outputs: None.
+ * Executes a read-only full-history Git log and appends findings to errors.
+ * @param {string[]} errors - Mutable list of violations.
  */
 function scanHistory(errors) {
   const history = execFileSync(
@@ -113,13 +102,10 @@ function scanHistory(errors) {
 }
 
 /**
- * Validate repository hygiene and security-sensitive configuration.
+ * Check required files, tracked-file hygiene, secrets, and security headers.
  *
- * Requires: Run from the repository root with Node.js 22 or newer.
- * Modifies: Nothing in the repository.
- * Effects: Reads files and Git metadata; exits nonzero on violations.
- * Inputs: Optional --history command-line flag.
- * Outputs: A concise pass/fail report.
+ * Run from the repository root with Node.js 22 or newer. Pass --history to
+ * include history scanning. Exits with a nonzero status on violations.
  */
 function main() {
   const errors = [];
