@@ -96,8 +96,16 @@ const seasonOrder: Record<string, number> = {
   Fall: 4,
 };
 
+/** Project data loaded from the committed SQL seeds at Astro build time. */
 export const projects = loadProjectsFromSql();
 
+/**
+ * Look up a project by its stable SQL identifier.
+ *
+ * @param id - Project identifier used across both SQL seed files.
+ * @returns The matching project with its ordered detail data.
+ * @throws Error if the seed does not contain the requested project.
+ */
 export function getProjectById(id: string): Project {
   const project = projects.find((candidate) => candidate.id === id);
 
@@ -108,6 +116,12 @@ export function getProjectById(id: string): Project {
   return project;
 }
 
+/**
+ * Resolve project imagery, falling back to the standard project card asset.
+ *
+ * @param project - Project with optional image overrides.
+ * @returns Complete image metadata for cards and detail pages.
+ */
 export function getProjectImage(project: Project): ProjectImage {
   return {
     src: project.image?.src || `/images/project-card-thumbnails/${project.id}.webp`,
@@ -117,10 +131,16 @@ export function getProjectImage(project: Project): ProjectImage {
   };
 }
 
+/** Return the displayed season, or an empty string if none is available. */
 export function getProjectSeason(project: Pick<Project, 'season'>): string {
   return project.season || '';
 }
 
+/**
+ * Convert a season label into a sortable chronological key.
+ *
+ * @returns Zero for an absent or unrecognized season.
+ */
 export function getSeasonSortValue(project: Pick<Project, 'season'>): number {
   if (!project.season) {
     return 0;
@@ -136,6 +156,12 @@ export function getSeasonSortValue(project: Pick<Project, 'season'>): number {
   return year * 10 + (seasonOrder[season] || 0);
 }
 
+/**
+ * Resolve a classification slug from project metadata or a display label.
+ *
+ * Prefers the explicit SQL-backed detail slug when a project is provided.
+ * @returns Empty string for an absent project or label.
+ */
 export function getProjectClassificationSlug(
   project: Pick<Project, 'detail' | 'classification'> | string | undefined | null,
 ): string {
@@ -150,12 +176,14 @@ export function getProjectClassificationSlug(
   return project.detail?.slug || slugify(project.classification);
 }
 
+/** Return the canonical classification slug used by project filters. */
 export function getProjectClassificationValue(
   project: Pick<Project, 'classification' | 'detail'>,
 ): string {
   return getProjectClassificationSlug(project);
 }
 
+/** Format the classification label, including a course code when present. */
 export function getProjectClassificationLabel(
   project: Pick<Project, 'courseCode' | 'classification'>,
 ): string {
@@ -164,6 +192,11 @@ export function getProjectClassificationLabel(
     : project.classification;
 }
 
+/**
+ * Build distinct classification filter options across organizations.
+ *
+ * Groups by organization and slug, then sorts options for display.
+ */
 export function getProjectCourseClassificationOptions(
   projectsToGroup: Project[],
 ): ProjectCourseClassificationOption[] {
@@ -196,6 +229,13 @@ export function getProjectCourseClassificationOptions(
   });
 }
 
+/**
+ * Read the two SQL seeds and construct project data for the static build.
+ *
+ * Resources, technologies, highlights, and additional sections are sorted by
+ * their SQL positions. This reader accepts the repository's INSERT format;
+ * it is not a general-purpose SQL engine.
+ */
 function loadProjectsFromSql(): Project[] {
   const sql =
     readSqlSeed('data/projects.sql', true) + '\n' + readSqlSeed('data/project-details.sql', false);
@@ -393,6 +433,7 @@ function loadProjectsFromSql(): Project[] {
     .sort((a, b) => a.title.localeCompare(b.title));
 }
 
+/** Redact restricted coursework repository labels in public project resources. */
 function normalizeProjectResource(project: ProjectDraft, resource: ResourceRow): ResourceRow {
   if (!isRestrictedCourseworkRepository(project, resource)) {
     return resource;
@@ -405,6 +446,7 @@ function normalizeProjectResource(project: ProjectDraft, resource: ResourceRow):
   };
 }
 
+/** Identify EECS coursework repository links that must be presented as restricted. */
 function isRestrictedCourseworkRepository(
   project: Pick<Project, 'organization' | 'courseCode'>,
   resource: ProjectResource,
@@ -417,6 +459,12 @@ function isRestrictedCourseworkRepository(
   );
 }
 
+/**
+ * Read a SQL seed from the repository root.
+ *
+ * @param required - Throw if a required seed is missing; otherwise return an empty string.
+ * @throws Error when the required seed cannot be found.
+ */
 function readSqlSeed(relativeFilePath: string, required: boolean): string {
   const candidatePaths = [
     path.join(process.cwd(), relativeFilePath),
@@ -454,6 +502,7 @@ function buildImage({
   };
 }
 
+/** Extract values for INSERT statements targeting one seed table. */
 function matchInsertValues(sql: string, tableName: string): string[] {
   const insertPattern = new RegExp(
     `INSERT\\s+INTO\\s+${tableName}\\s*\\([^)]*\\)\\s+VALUES\\s*\\(([\\s\\S]*?)\\);`,
@@ -468,6 +517,12 @@ function matchInsertValues(sql: string, tableName: string): string[] {
   return values;
 }
 
+/**
+ * Parse a simple SQL VALUES tuple, preserving commas inside quoted strings.
+ *
+ * Doubled single quotes represent a literal apostrophe. Only the committed
+ * seed file convention is supported.
+ */
 function parseSqlValues(values: string): SqlValue[] {
   const parsed: SqlValue[] = [];
   let token = '';
@@ -512,6 +567,7 @@ function parseSqlValues(values: string): SqlValue[] {
   return parsed;
 }
 
+/** Interpret NULL and numeric tokens; otherwise retain the trimmed string. */
 function parseSqlToken(token: string): SqlValue {
   const trimmed = token.trim();
 
@@ -556,6 +612,7 @@ function asNumber(value: SqlValue): number {
   return Number.isFinite(numberValue) ? numberValue : 0;
 }
 
+/** Normalize a display label to a lowercase, URL-safe classification slug. */
 function slugify(value: string): string {
   return value
     .toLowerCase()
