@@ -1,0 +1,42 @@
+name: One-time documentation formatting
+
+on:
+  push:
+    branches:
+      - docs/refresh-portfolio-and-jsdoc
+    paths:
+      - .github/workflows/format-documentation-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout documentation branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: true
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Format documentation with the committed Prettier version
+        run: |
+          npm ci
+          npx prettier --write README.md data/README.md STYLE.md
+      - name: Commit formatted guides only
+        run: |
+          set -euo pipefail
+          git add README.md data/README.md STYLE.md
+          if git diff --cached --quiet; then
+            echo 'No documentation formatting changes needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'style(docs): format guides with repository Prettier'
+          git push origin HEAD:refs/heads/docs/refresh-portfolio-and-jsdoc
