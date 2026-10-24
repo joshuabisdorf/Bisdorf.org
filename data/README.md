@@ -1,37 +1,50 @@
-# Project database
+# SQL-backed project content
 
-Project metadata is stored in SQLite-compatible SQL seed files:
+Bisdorf.org generates its project index, project detail pages, and sitemap from SQL seed files
+loaded during the Astro build. This is a **build-time content source**, not a live SQL server.
 
-```text
-data/projects.sql
-data/project-details.sql
-```
+| File | Tables and content |
+| --- | --- |
+| **data/projects.sql** | projects, project_technologies, project_resources |
+| **data/project-details.sql** | project_page_copy, project_highlights, project_extra_details, project_extra_sections, project_embedded_videos |
 
-The SQL seed uses these tables:
+**src/data/projects.ts** reads the two seeds into typed project objects and sorts resources,
+technologies, highlights, and detail rows by their numeric **position** field. The shared
+template **src/components/ProjectDetailPage.astro** renders the data, while
+**src/pages/projects/[...slug].astro** generates routes from the project **detail_path**.
+The project index and sitemap use the same loaded project collection.
 
-```text
-projects
-project_technologies
-project_resources
-project_page_copy
-project_highlights
-project_extra_details
-project_extra_sections
-project_embedded_videos
-```
+## Editing a project
 
-The public site reads project metadata and detail-page copy directly from these SQL files at Astro build time through `src/data/projects.ts`. There is no generated `src/content/projects` metadata layer and no export script required for normal builds.
+1. In **data/projects.sql**, edit its core record (ID, title, classification, summary, route,
+   featured state, and image metadata). Update technologies and repository/release links.
+2. In **data/project-details.sql**, edit its overview, “What I Built” description, highlights,
+   labeled metadata, longer sections, and embedded videos.
+3. Reuse the same project ID in both files. Keep **position** values unique within each
+   project/table so display order stays predictable.
+4. Preserve SQL string syntax: wrap text in single quotes and represent an apostrophe as two
+   single quotes. The TypeScript loader parses simple INSERT statements, not arbitrary SQL.
+5. Add missing images to **public/images/project-card-thumbnails/**, or use explicit image
+   metadata pointing to another existing static asset.
 
-## Updating projects
+After editing, run:
 
-Edit `data/projects.sql` when adding or changing core project metadata, technologies, or resources.
+~~~bash
+npm ci
+npm run check
+~~~
 
-Edit `data/project-details.sql` when adding or changing project detail-page copy, highlights, extra details, extra sections, or embedded videos.
+Confirm the project appears in **/projects**, that the shared project route builds and renders,
+and that every site-local artifact link resolves. The site-integrity script validates generated
+site paths; it does not verify the availability of external GitHub or video URLs.
 
-Then run:
+## Maintaining release references
 
-```bash
-npm run build
-```
+For projects with public releases (for example, Secure AI Gateway), update the current
+release's version, description, and versioned resource links together in the two seed files.
+Keep an old release link only if clearly labeled as historical. Link to a published GitHub
+Release rather than an unverified branch or candidate tag.
 
-All project detail pages are rendered by the shared template route at `src/pages/projects/[...slug].astro`. The older `static` / `dynamic` detail mode distinction is no longer used by the routing code.
+The old **static/dynamic** project detail distinction is no longer used for routing;
+all project detail pages use the shared dynamic route. The legacy **body_markdown** field in
+the SQL data is not displayed by the current template.
