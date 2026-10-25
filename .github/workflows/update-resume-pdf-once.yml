@@ -41,15 +41,19 @@ jobs:
           pdf="$RUNNER_TEMP/new-resume/$SOURCE_ARTIFACT"
           test -s "$pdf"
           test "$(head -c 4 "$pdf")" = '%PDF'
-          command -v pdftotext
-          command -v pdfinfo
+          if ! command -v pdftotext >/dev/null || ! command -v pdfinfo >/dev/null; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq poppler-utils
+          fi
           test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = '1'
           artifact_source_sha="$(gh run view "$SOURCE_RUN" \
             --repo "$SOURCE_REPO" --json headSha --jq '.headSha')"
+          echo "Source commit: $artifact_source_sha"
           test "$artifact_source_sha" = "$SOURCE_COMMIT"
-          pdftotext -layout "$pdf" - | grep -Fq 'CUDA'
-          pdftotext -layout "$pdf" - | grep -Fq 'Software Engineer'
-          pdftotext -layout "$pdf" - | grep -Fq 'KBR, Inc.'
+          pdftotext -layout "$pdf" "$RUNNER_TEMP/new-resume/text.txt"
+          grep -Fq 'CUDA' "$RUNNER_TEMP/new-resume/text.txt"
+          grep -Fq 'Software Engineer' "$RUNNER_TEMP/new-resume/text.txt"
+          grep -Fq 'KBR, Inc.' "$RUNNER_TEMP/new-resume/text.txt"
           echo 'Verified one-page resume from the CUDA source commit.'
           echo 'Published artifact checksum:'
           sha256sum "$pdf"
