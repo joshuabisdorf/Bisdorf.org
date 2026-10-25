@@ -1,0 +1,63 @@
+name: One-time CUDA resume PDF update
+
+on:
+  push:
+    branches:
+      - assets/update-resume-cuda-2026-10-24
+    paths:
+      - .github/workflows/update-resume-pdf-once.yml
+
+permissions:
+  contents: write
+
+jobs:
+  replace-pdf:
+    if: github.repository == 'joshuabisdorf/Bisdorf.org'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_REPO: joshuabisdorf/Joshua-Bisdorf-Resume
+      SOURCE_RUN: '40132989876'
+      SOURCE_ARTIFACT: Joshua-Bisdorf_Resume_10-24-2026.pdf
+      EXPECTED_SHA256: 42c0af4e605e07fa176c8a4725beebcf18553067050e67e614b5fd2d95d9c4f3
+
+    steps:
+      - name: Check out website branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: true
+
+      - name: Download verified resume artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/new-resume"
+          gh run download "$SOURCE_RUN" \
+            --repo "$SOURCE_REPO" \
+            --name "$SOURCE_ARTIFACT" \
+            --dir "$RUNNER_TEMP/new-resume"
+
+          pdf="$RUNNER_TEMP/new-resume/$SOURCE_ARTIFACT"
+          test -s "$pdf"
+          printf '%s  %s\n' "$EXPECTED_SHA256" "$pdf" | sha256sum --check
+          test "$(head -c 4 "$pdf")" = '%PDF'
+
+          cp "$pdf" public/resume.pdf
+          printf 'Resume bytes: '
+          wc -c < public/resume.pdf
+
+      - name: Commit only updated PDF and remove one-time workflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/resume.pdf
+          git rm .github/workflows/update-resume-pdf-once.yml
+          git diff --cached --quiet && {
+            echo 'No website PDF changes to commit.' >&2
+            exit 1
+          }
+          git commit -m 'assets: update hosted resume PDF to include CUDA'
+          git push origin "HEAD:refs/heads/$GITHUB_REF_NAME"
