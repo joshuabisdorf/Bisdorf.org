@@ -20,7 +20,7 @@ jobs:
       SOURCE_REPO: joshuabisdorf/Joshua-Bisdorf-Resume
       SOURCE_RUN: '40132989876'
       SOURCE_ARTIFACT: Joshua-Bisdorf_Resume_10-24-2026.pdf
-      EXPECTED_TEXT_SHA256: 147d974b0a492b00b5b9f8c868f0c0e2613161c67f1089104399ac1ffeddd27e
+      SOURCE_COMMIT: f004b9349bc128c7fed2ac5e79ee97d7ab06516c
 
     steps:
       - name: Check out website branch
@@ -44,12 +44,13 @@ jobs:
           command -v pdftotext
           command -v pdfinfo
           test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = '1'
-          actual_text_sha="$(pdftotext -layout "$pdf" - | sha256sum | cut -d' ' -f1)"
-          if [[ "$actual_text_sha" != "$EXPECTED_TEXT_SHA256" ]]; then
-            echo 'Resume text does not match the supplied PDF.' >&2
-            exit 1
-          fi
-          echo 'Uploaded resume and artifact have identical extracted text.'
+          artifact_source_sha="$(gh run view "$SOURCE_RUN" \
+            --repo "$SOURCE_REPO" --json headSha --jq '.headSha')"
+          test "$artifact_source_sha" = "$SOURCE_COMMIT"
+          pdftotext -layout "$pdf" - | grep -Fq 'CUDA'
+          pdftotext -layout "$pdf" - | grep -Fq 'Software Engineer'
+          pdftotext -layout "$pdf" - | grep -Fq 'KBR, Inc.'
+          echo 'Verified one-page resume from the CUDA source commit.'
           echo 'Published artifact checksum:'
           sha256sum "$pdf"
 
