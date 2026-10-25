@@ -20,7 +20,7 @@ jobs:
       SOURCE_REPO: joshuabisdorf/Joshua-Bisdorf-Resume
       SOURCE_RUN: '40132989876'
       SOURCE_ARTIFACT: Joshua-Bisdorf_Resume_10-24-2026.pdf
-      EXPECTED_SHA256: 42c0af4e605e07fa176c8a4725beebcf18553067050e67e614b5fd2d95d9c4f3
+      EXPECTED_TEXT_SHA256: 147d974b0a492b00b5b9f8c868f0c0e2613161c67f1089104399ac1ffeddd27e
 
     steps:
       - name: Check out website branch
@@ -40,8 +40,18 @@ jobs:
 
           pdf="$RUNNER_TEMP/new-resume/$SOURCE_ARTIFACT"
           test -s "$pdf"
-          printf '%s  %s\n' "$EXPECTED_SHA256" "$pdf" | sha256sum --check
           test "$(head -c 4 "$pdf")" = '%PDF'
+          command -v pdftotext
+          command -v pdfinfo
+          test "$(pdfinfo "$pdf" | awk '/^Pages:/ {print $2}')" = '1'
+          actual_text_sha="$(pdftotext -layout "$pdf" - | sha256sum | cut -d' ' -f1)"
+          if [[ "$actual_text_sha" != "$EXPECTED_TEXT_SHA256" ]]; then
+            echo 'Resume text does not match the supplied PDF.' >&2
+            exit 1
+          fi
+          echo 'Uploaded resume and artifact have identical extracted text.'
+          echo 'Published artifact checksum:'
+          sha256sum "$pdf"
 
           cp "$pdf" public/resume.pdf
           printf 'Resume bytes: '
